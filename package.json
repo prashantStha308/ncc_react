@@ -1,0 +1,18 @@
+{
+  "name": "ncc_final_proj",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dotnet-watch": "dotnet watch run --project ./backend/backend.csproj",
+    "dotnet-run": "dotnet run --project ./backend/backend.csproj",
+    "dotnet-build": "dotnet build --project ./backend/backend.csproj",
+    "dotnet-clean": "dotnet clean --project ./backend/backend.csproj",
+
+    "test": "echo 'configure react ko lagi paxi'"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
+}
