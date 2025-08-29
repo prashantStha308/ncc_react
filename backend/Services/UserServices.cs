@@ -73,6 +73,20 @@ public class UserServices : IUserServices
             return UserRes.Fail(e);
         }
     }
+
+    public Result<List<TaskList>> GetAllUserLists(Guid userId)
+    {
+        try
+        {
+            List<TaskList> usersList = _context.ListSet.Where(l => l.OwnerId == userId).ToList();
+            return Result<List<TaskList>>.Ok(usersList, "Lists associated with user of provided userId has been fetched");
+        }
+        catch (ApiError e)
+        {
+            return Result<List<TaskList>>.Fail(e);
+        }
+    }
+
     public UserRes UpdateUserById(Guid UserId, UserRequests_Update updateDto)
     {
         try

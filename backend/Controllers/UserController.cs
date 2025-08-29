@@ -1,4 +1,5 @@
 using backend.DTO;
+using backend.Models;
 using backend.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -28,6 +29,16 @@ namespace backend.Controllers
         public IActionResult Login([FromBody] UserRequests_Login login)
         {
             var res = _services.LogIn(login);
+            if (!res.Success) return BadRequest(res);
+
+            return Ok(res);
+        }
+
+        [HttpGet("list/{userId}")]
+        public IActionResult GetAllUserLists(Guid userId)
+        {
+            var res = _services.GetAllUserLists(userId);
+            
             if (!res.Success) return BadRequest(res);
 
             return Ok(res);
