@@ -6,8 +6,8 @@ namespace backend.Models;
 public class Result<T>
 {
     public bool Success { get; init; }
-    public T? Data;
-    public int Status;
+    public T? Data { get; set; }
+    public int Status { get; set; }
     public string? Message { get; init; }
 
     public static Result<T> Ok(T data, string message = "", int status=200)

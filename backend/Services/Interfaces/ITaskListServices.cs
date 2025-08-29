@@ -1,3 +1,4 @@
+using backend.DTO;
 using backend.Models;
 
 namespace backend.Services;
@@ -7,9 +8,9 @@ using ListResult = Result<TaskList>;
 
 public interface ITaskListServices
 {
-    public ListResult CreateList(string Name, string Desc);
+    public ListResult CreateList(TaskListRequest request);
     public ListResult DeleteList(Guid listId);
-    public ListResult UpdateListById(Guid listId, string? name, string? desc);
+    public ListResult UpdateListById(Guid listId, TaskListRequest request);
     public Result<List<TaskList>> GetAllLists();
     public ListResult GetListById(Guid listId);
     public Result<bool> CheckAndUpdateListStatusById(Guid ListId);

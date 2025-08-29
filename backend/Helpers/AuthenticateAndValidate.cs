@@ -1,4 +1,5 @@
 using backend.Constants;
+using backend.Data;
 using backend.Models;
 using Microsoft.AspNetCore.Identity;
 namespace backend.Helpers;
@@ -6,6 +7,11 @@ namespace backend.Helpers;
 public class AuthenticateAndValidate
 {
     private readonly PasswordHasher<UserModel> _hasher = new();
+    private readonly AppDbContext _context;
+
+    public AuthenticateAndValidate( AppDbContext context ) {
+        _context = context;
+    }
     /*
     *=========================
     * Hashing Password
@@ -28,9 +34,20 @@ public class AuthenticateAndValidate
         return result == PasswordVerificationResult.Success;
     }
 
-    public void ValidateExistance(object? target)
+    public T ValidateExistance<T>(T? target) where T : class
     {
         if (target == null) throw new ApiError("Target Not Found", 404);
+        return target;
+    }
+
+    public T GetDataById<T>(Guid id) where T : class
+    {
+        T? target = _context.Set<T>().Find(id);
+
+        if (target == null)
+            throw new ApiError($"{typeof(T).Name} not found", 404);
+
+        return target;
     }
 
 }

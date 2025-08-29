@@ -1,5 +1,6 @@
 using backend.Constants;
 using backend.Data;
+using backend.DTO;
 using backend.Helpers;
 using backend.Models;
 using Microsoft.EntityFrameworkCore;
@@ -11,15 +12,17 @@ using ListResult = Result<TaskList>;
 public class TaskListServices : ITaskListServices
 {
     private readonly AppDbContext _context;
-    public TaskListServices(AppDbContext context)
+    private readonly AuthenticateAndValidate _auth;
+    public TaskListServices(AppDbContext context, AuthenticateAndValidate auth)
     {
         _context = context;
+        _auth = auth;
     }
-    public ListResult CreateList(string Name, string Desc = "No Description Added")
+    public ListResult CreateList( TaskListRequest request )
     {
         try
         {
-            TaskList NewList = new(Name, Desc);
+            TaskList NewList = new(request.Name, request.Desc!);
 
             _context.ListSet.Add(NewList);
             _context.SaveChanges();
@@ -36,12 +39,10 @@ public class TaskListServices : ITaskListServices
     {
         try
         {
-            TaskList? targetList = _context.ListSet.Include(list => list.List).FirstOrDefault(list => list.ListId == listId);
+            TaskList? target = _auth.GetDataById<TaskList>(listId);
 
-            if (targetList == null) return ListResult.Fail(ErrorMessages.ItemNotFoundWithId("TaskList", listId), 404);
-
-            _context.TaskSet.RemoveRange(targetList.List);
-            _context.ListSet.Remove(targetList);
+            _context.TaskSet.RemoveRange(target.List);
+            _context.ListSet.Remove(target);
             _context.SaveChanges();
 
             return ListResult.Ok("Deleted Task List successfully", 200);
@@ -52,16 +53,15 @@ public class TaskListServices : ITaskListServices
         }
     }
 
-    public ListResult UpdateListById(Guid listId, string? name, string? desc)
+    public ListResult UpdateListById(Guid listId, TaskListRequest request)
     {
         try
         {
-            TaskList? target = _context.ListSet.FirstOrDefault(list => list.ListId == listId);
+            TaskList? target = _auth.GetDataById<TaskList>(listId);
 
-            if (target == null) return ListResult.Fail(ErrorMessages.ItemNotFoundWithId("TaskList", listId), 404);
 
-            if (name != null) target.Name = name;
-            if (desc != null) target.Desc = desc;
+            if (request.Name != null) target.Name = request.Name;
+            if (request.Name != null) target.Desc = request.Desc;
 
             _context.SaveChanges();
 
@@ -79,7 +79,7 @@ public class TaskListServices : ITaskListServices
         {
             List<TaskList> taskLists = _context.ListSet.ToList();
 
-            return Result<List<TaskList>>.Ok(taskLists, "Fetched all Lists Successfully");
+            return Result<List<TaskList>>.Ok(taskLists, "Fetched all Lists Successfully", 200);
         }
         catch (ApiError e)
         {
@@ -91,11 +91,9 @@ public class TaskListServices : ITaskListServices
     {
         try
         {
-            TaskList? target = _context.ListSet.FirstOrDefault(list => list.ListId == listId);
+            TaskList? target = _auth.GetDataById<TaskList>(listId);
 
-            if (target == null) return ListResult.Fail(ErrorMessages.ItemNotFoundWithId("TaskList", listId), 404);
-
-            return ListResult.Ok(target, "Successfully Fetched List");
+            return ListResult.Ok(target, "Successfully Fetched List", 200);
         }
         catch (ApiError e)
         {
@@ -103,18 +101,17 @@ public class TaskListServices : ITaskListServices
         }
     }
 
-    public Result<bool> CheckAndUpdateListStatusById(Guid ListId)
+    public Result<bool> CheckAndUpdateListStatusById(Guid listId)
     {
         try
         {
-            TaskList? targetList = _context.ListSet.FirstOrDefault(list => list.ListId == ListId);
+            TaskList? target = _auth.GetDataById<TaskList>(listId);
 
-            if (targetList == null) return Result<bool>.Fail("Target list not present in Database", 404);
 
-            targetList.IsCompleted = targetList.List.TrueForAll(item => item.IsCompleted);
+            target.IsCompleted = target.List.TrueForAll(item => item.IsCompleted);
             _context.SaveChanges();
 
-            return Result<bool>.Ok(targetList.IsCompleted, "Updated list status successfully", 200);
+            return Result<bool>.Ok(target.IsCompleted, "Updated list status successfully", 200);
         }
         catch (ApiError e)
         {

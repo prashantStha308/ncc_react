@@ -7,7 +7,7 @@ namespace backend.Models;
 public class TaskList
 {
     public string Name { get; set; }
-    public string Desc { get; set; }
+    public string? Desc { get; set; }
     public bool IsCompleted { get; set; } = false;
     public DateTime DateCreated { get; init; } = DateTime.UtcNow;
     public DateTime LastUpdated { get; set; }
@@ -20,14 +20,14 @@ public class TaskList
     // Deafult constructor for EF
     public TaskList() { }
 
-    public TaskList(string name, string desc)
+    public TaskList(string name, string? desc)
     {
         Name = name;
         Desc = desc;
         LastUpdated = DateTime.UtcNow;
     }
 
-    public TaskList(Guid ownerId, string name, string desc)
+    public TaskList(Guid ownerId, string name, string? desc)
     {
         OwnerId = ownerId;
         Name = name;

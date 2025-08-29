@@ -15,6 +15,15 @@ namespace backend.Controllers
             _services = services;
         }
 
+        [HttpGet("")]
+        public IActionResult GetAll()
+        {
+            var res = _services.GetAllTasks();
+            if (!res.Success) return BadRequest(res);
+
+            return Ok(res);
+        }
+
         [HttpPost("{listId}/tasks")]
         public IActionResult AddTask(Guid listId, [FromBody] TaskRequest requestDto)
         {

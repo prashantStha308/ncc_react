@@ -22,22 +22,14 @@ public class UserServices : IUserServices
         _auth = auth;
     }
 
-    private UserModel GetUserById(Guid id)
-    {
-        var user = _context.UserSet.FirstOrDefault(u => u.User_Id == id);
-        _auth.ValidateExistance(user);
-        return user!;
-    }
-
     private UserModel GetUserByEmail(string email)
     {
         if (new EmailAddressAttribute().IsValid(email))
-        {
             throw new ApiError("Invalid Email.", 400);
-        }
-        var user = _context.UserSet.FirstOrDefault(u => u.Email == email);
-        _auth.ValidateExistance(user);
-        return user!;
+
+        var user = _auth.ValidateExistance( _context.UserSet.FirstOrDefault(u => u.Email == email) );
+
+        return user;
     }
 
     public UserResult Register(UserRequests_Register registerDto)
@@ -84,7 +76,7 @@ public class UserServices : IUserServices
     {
         try
         {
-            UserModel? target = GetUserById(UserId);
+            UserModel? target = _auth.GetDataById<UserModel>(UserId);
 
             if (!string.IsNullOrEmpty(updateDto.Email))
             {
@@ -111,7 +103,7 @@ public class UserServices : IUserServices
     {
         try
         {
-            UserModel? target = GetUserById(UserId);
+            UserModel? target = _auth.GetDataById<UserModel>(UserId);
 
             _context.UserSet.Remove(target);
             _context.SaveChanges();

@@ -13,10 +13,12 @@ using TaskResult = Result<TaskItem>;
 public class TaskServices : ITaskService
 {
     private readonly AppDbContext _context;
+    private readonly AuthenticateAndValidate _auth;
 
-    public TaskServices(AppDbContext context)
+    public TaskServices(AppDbContext context, AuthenticateAndValidate auth)
     {
         _context = context;
+        _auth = auth;
     }
 
     public TaskResult AddTaskInList(Guid listId, TaskRequest requestDto)
@@ -36,13 +38,25 @@ public class TaskServices : ITaskService
         }
     }
 
+    public Result<List<TaskItem>> GetAllTasks()
+    {
+        try
+        {
+            List<TaskItem> tasks = _context.TaskSet.ToList();
+            return Result<List<TaskItem>>.Ok(tasks, "Fetched All Tasks", 200);
+        }
+        catch (ApiError e)
+        {
+            return Result<List<TaskItem>>.Fail(e);
+        }
+    }
+
+
     public TaskResult DeleteTaskById(Guid taskId)
     {
         try
         {
-            TaskItem? target = _context.TaskSet.FirstOrDefault(item => item.TaskId == taskId);
-
-            if (target == null) return TaskResult.Fail(ErrorMessages.ItemNotFoundWithId("TaskItem", taskId), 404);
+            TaskItem? target = _auth.ValidateExistance(_context.TaskSet.FirstOrDefault(item => item.TaskId == taskId));
 
             _context.TaskSet.Remove(target);
             _context.SaveChanges();
@@ -60,9 +74,7 @@ public class TaskServices : ITaskService
     {
         try
         {
-            TaskItem? target = _context.TaskSet.FirstOrDefault(task => task.TaskId == taskId);
-
-            if (target == null) return TaskResult.Fail(ErrorMessages.ItemNotFoundWithId("TaskItem", taskId), 404);
+            TaskItem? target = _auth.ValidateExistance(_context.TaskSet.FirstOrDefault(task => task.TaskId == taskId));
 
             if (requestDto.Name != null) target.TaskName = requestDto.Name;
             if (requestDto.Desc != null) target.Desc = requestDto.Desc;

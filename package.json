@@ -4,10 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dotnet-watch": "dotnet watch run --project ./backend/backend.csproj",
-    "dotnet-run": "dotnet run --project ./backend/backend.csproj",
-    "dotnet-build": "dotnet build --project ./backend/backend.csproj",
-    "dotnet-clean": "dotnet clean --project ./backend/backend.csproj",
+    "dot-watch": "dotnet watch run --project ./backend/backend.csproj",
+    "dot-run": "dotnet run --project ./backend/backend.csproj",
+    "dot-build": "dotnet build --project ./backend/backend.csproj",
+    "dot-clean": "dotnet clean --project ./backend/backend.csproj",
 
     "db-add": "dotnet ef migrations add --project ./backend",
     "db-update": "dotnet ef database update --project ./backend",
