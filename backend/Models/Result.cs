@@ -1,4 +1,5 @@
 using System;
+using backend.Helpers;
 
 namespace backend.Models;
 
@@ -43,13 +44,13 @@ public class Result<T>
     }
 
     // Overload Fail function to account for Exception handeling
-    public static Result<T> Fail(Exception e, int status = 500)
+    public static Result<T> Fail(ApiError e)
     {
         return new()
         {
             Success = false,
             Message = e.Message,
-            Status = status
+            Status = e.Status
         };
     }
 

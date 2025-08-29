@@ -9,6 +9,10 @@
     "dotnet-build": "dotnet build --project ./backend/backend.csproj",
     "dotnet-clean": "dotnet clean --project ./backend/backend.csproj",
 
+    "db-add": "dotnet ef migrations add --project ./backend",
+    "db-update": "dotnet ef database update --project ./backend",
+    "db-remove": "dotnet ef migrations remove --project ./backend",
+
     "test": "echo 'configure react ko lagi paxi'"
   },
   "keywords": [],

@@ -1,0 +1,128 @@
+using System.ComponentModel.DataAnnotations;
+using backend.Constants;
+using backend.Data;
+using backend.DTO;
+using backend.Helpers;
+using backend.Models;
+using backend.Services.Interfaces;
+using Microsoft.AspNetCore.Identity;
+
+namespace backend.Services;
+
+using UserResult = Result<UserModel>;
+using UserRes = Result<UserResponse>;
+
+public class UserServices : IUserServices
+{
+    private readonly AppDbContext _context;
+    private readonly AuthenticateAndValidate _auth;
+    public UserServices(AppDbContext context, AuthenticateAndValidate auth)
+    {
+        _context = context;
+        _auth = auth;
+    }
+
+    private UserModel GetUserById(Guid id)
+    {
+        var user = _context.UserSet.FirstOrDefault(u => u.User_Id == id);
+        _auth.ValidateExistance(user);
+        return user!;
+    }
+
+    private UserModel GetUserByEmail(string email)
+    {
+        if (new EmailAddressAttribute().IsValid(email))
+        {
+            throw new ApiError("Invalid Email.", 400);
+        }
+        var user = _context.UserSet.FirstOrDefault(u => u.Email == email);
+        _auth.ValidateExistance(user);
+        return user!;
+    }
+
+    public UserResult Register(UserRequests_Register registerDto)
+    {
+        try
+        {
+            UserModel? target = GetUserByEmail(registerDto.Email);
+
+            // Generate hashed Password
+            string hashedPassword = _auth.GetHashedPassword(null, registerDto.Password);
+
+            UserModel newUser = new(registerDto.Username, registerDto.Email, hashedPassword);
+
+            _context.UserSet.Add(newUser);
+            _context.SaveChanges();
+
+            return UserResult.Ok("Registered User Successfully");
+        }
+        catch (ApiError e)
+        {
+            return UserResult.Fail(e);
+        }
+    }
+
+    public UserRes LogIn(UserRequests_Login loginDto)
+    {
+        try
+        {
+            UserModel? target = GetUserByEmail(loginDto.Email);
+
+            if (!_auth.VerifyPassword(target, target.Password, loginDto.Password))
+                return UserRes.Fail("Invalid Credentials", 401);
+
+            UserResponse SafeResponse = new(target.Username, target.User_Id);
+
+            return UserRes.Ok(SafeResponse, "User logged In.");
+        }
+        catch (ApiError e)
+        {
+            return UserRes.Fail(e);
+        }
+    }
+    public UserRes UpdateUserById(Guid UserId, UserRequests_Update updateDto)
+    {
+        try
+        {
+            UserModel? target = GetUserById(UserId);
+
+            if (!string.IsNullOrEmpty(updateDto.Email))
+            {
+                if (!new EmailAddressAttribute().IsValid(updateDto.Email))
+                {
+                    return UserRes.Fail("Invalid Email", 400);
+                }
+                target.Email = updateDto.Email;
+            }
+            if (!string.IsNullOrEmpty(updateDto.Username)) target.Username = updateDto.Username;
+
+            _context.SaveChanges();
+
+            UserResponse SafeRes = new(target.Username, target.User_Id);
+
+            return UserRes.Ok(SafeRes, "Updated User Successfully");
+        }
+        catch (ApiError e)
+        {
+            return UserRes.Fail(e);
+        }
+    }
+    public UserResult DeleteUserById(Guid UserId)
+    {
+        try
+        {
+            UserModel? target = GetUserById(UserId);
+
+            _context.UserSet.Remove(target);
+            _context.SaveChanges();
+
+            return UserResult.Ok("Successfully Deleted the User");
+
+        }
+        catch (ApiError e)
+        {
+            return UserResult.Fail(e);
+        }
+    }
+
+}
