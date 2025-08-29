@@ -1,5 +1,3 @@
-using backend.Constants;
-using backend.Data;
 using backend.Models;
 using Microsoft.AspNetCore.Identity;
 namespace backend.Helpers;
@@ -7,14 +5,9 @@ namespace backend.Helpers;
 public class AuthenticateAndValidate
 {
     private readonly PasswordHasher<UserModel> _hasher = new();
-    private readonly AppDbContext _context;
-
-    public AuthenticateAndValidate( AppDbContext context ) {
-        _context = context;
-    }
     /*
     *=========================
-    * Hashing Password
+    * Hashing Password. Read later to strengthen hashing
     *=========================
     * 
     * Initial Read: https://www.reddit.com/r/dotnet/comments/1fxjgov/best_practices_for_hashing_and_verifying/
@@ -25,7 +18,7 @@ public class AuthenticateAndValidate
     */
     public string GetHashedPassword(UserModel? User, string password)
     {
-        return _hasher.HashPassword(User, password);
+        return _hasher.HashPassword(User!, password);
     }
 
     public bool VerifyPassword(UserModel user, string hashedPassword, string password)
@@ -39,15 +32,4 @@ public class AuthenticateAndValidate
         if (target == null) throw new ApiError("Target Not Found", 404);
         return target;
     }
-
-    public T GetDataById<T>(Guid id) where T : class
-    {
-        T? target = _context.Set<T>().Find(id);
-
-        if (target == null)
-            throw new ApiError($"{typeof(T).Name} not found", 404);
-
-        return target;
-    }
-
 }

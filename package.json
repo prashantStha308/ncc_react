@@ -4,19 +4,23 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dot-watch": "dotnet watch run --project ./backend/backend.csproj",
-    "dot-run": "dotnet run --project ./backend/backend.csproj",
-    "dot-build": "dotnet build --project ./backend/backend.csproj",
-    "dot-clean": "dotnet clean --project ./backend/backend.csproj",
+    "watch": "cross-env ASPNETCORE_ENVIRONMENT=Development dotnet watch run --project ./backend/backend.csproj",
+    "dev": "cross-env ASPNETCORE_ENVIRONMENT=Development dotnet run --project ./backend/backend.csproj",
+    "prod": "cross-env ASPNETCORE_ENVIRONMENT=Production dotnet run --project ./backend/backend.csproj",
 
-    "db-add": "dotnet ef migrations add --project ./backend",
-    "db-update": "dotnet ef database update --project ./backend",
-    "db-remove": "dotnet ef migrations remove --project ./backend",
-
+    "build": "dotnet build --project ./backend/backend.csproj",
+    "clean": "dotnet clean --project ./backend/backend.csproj",
+    
+    "migrate-add": "dotnet ef migrations add --project ./backend",
+    "migrate-update": "dotnet ef database update --project ./backend",
+    "migrate-remove": "dotnet ef migrations remove --project ./backend",
     "test": "echo 'configure react ko lagi paxi'"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs"
+  "type": "commonjs",
+  "devDependencies": {
+    "cross-env": "^10.0.0"
+  }
 }

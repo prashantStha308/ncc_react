@@ -1,5 +1,3 @@
-using System;
-
 namespace backend.DTO;
 
 public class TaskRequest(string name, string? desc)

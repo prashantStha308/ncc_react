@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace backend.Models;
@@ -8,6 +6,8 @@ public class TaskList
 {
     public string Name { get; set; }
     public string? Desc { get; set; }
+    public int TaskCount { get; set; }
+    public int CompletedTaskCount { get; set; }
     public bool IsCompleted { get; set; } = false;
     public DateTime DateCreated { get; init; } = DateTime.UtcNow;
     public DateTime LastUpdated { get; set; }
@@ -32,6 +32,8 @@ public class TaskList
         OwnerId = ownerId;
         Name = name;
         Desc = desc;
+        TaskCount = 0;
+        CompletedTaskCount = 0;
         LastUpdated = DateTime.UtcNow;
     }
 }

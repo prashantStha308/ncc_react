@@ -1,10 +1,9 @@
-using System;
 using backend.DTO;
 using backend.Models;
 
 namespace backend.Services.Interfaces;
 
-using TaskResult = backend.Models.Result<backend.Models.TaskItem>;
+using TaskResult = Result<TaskItem>;
 
 public interface ITaskService
 {

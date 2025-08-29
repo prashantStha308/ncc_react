@@ -1,7 +1,7 @@
 using backend.DTO;
 using backend.Models;
 
-namespace backend.Services;
+namespace backend.Services.Interfaces;
 
 // Setting Aliases
 using ListResult = Result<TaskList>;
@@ -13,5 +13,5 @@ public interface ITaskListServices
     public ListResult UpdateListById(Guid listId, TaskListRequest request);
     public Result<List<TaskList>> GetAllLists();
     public ListResult GetListById(Guid listId);
-    public Result<bool> CheckAndUpdateListStatusById(Guid ListId);
+    public ListResult ToggleListStatusById(Guid ListId);
 }

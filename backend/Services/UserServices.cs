@@ -16,10 +16,12 @@ public class UserServices : IUserServices
 {
     private readonly AppDbContext _context;
     private readonly AuthenticateAndValidate _auth;
-    public UserServices(AppDbContext context, AuthenticateAndValidate auth)
+    private readonly RepositoryHelper _repo;
+    public UserServices(AppDbContext context, AuthenticateAndValidate auth, RepositoryHelper repo)
     {
         _context = context;
         _auth = auth;
+        _repo = repo;
     }
 
     private UserModel GetUserByEmail(string email)
@@ -43,8 +45,7 @@ public class UserServices : IUserServices
 
             UserModel newUser = new(registerDto.Username, registerDto.Email, hashedPassword);
 
-            _context.UserSet.Add(newUser);
-            _context.SaveChanges();
+            _repo.AddDataToContextAndSave<UserModel>(newUser);
 
             return UserResult.Ok("Registered User Successfully");
         }
@@ -76,7 +77,7 @@ public class UserServices : IUserServices
     {
         try
         {
-            UserModel? target = _auth.GetDataById<UserModel>(UserId);
+            UserModel? target = _repo.GetDataById<UserModel>(UserId);
 
             if (!string.IsNullOrEmpty(updateDto.Email))
             {
@@ -103,11 +104,7 @@ public class UserServices : IUserServices
     {
         try
         {
-            UserModel? target = _auth.GetDataById<UserModel>(UserId);
-
-            _context.UserSet.Remove(target);
-            _context.SaveChanges();
-
+            _repo.DeleteDataByIdAndSave<UserModel>(UserId);
             return UserResult.Ok("Successfully Deleted the User");
 
         }

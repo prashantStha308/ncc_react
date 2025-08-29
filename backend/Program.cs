@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Configure DbContext
 builder.Services.AddDbContext<AppDbContext>(option =>
 {
     var conn = builder.Configuration.GetConnectionString("DefaultConnection"); 
@@ -16,14 +17,28 @@ builder.Services.AddDbContext<AppDbContext>(option =>
 });
 // Inject Helpers classes
 builder.Services.AddScoped<AuthenticateAndValidate>();
+builder.Services.AddScoped<RepositoryHelper>();
 // Inject Service classes
 builder.Services.AddScoped<ITaskService, TaskServices>();
 builder.Services.AddScoped<ITaskListServices, TaskListServices>();
 builder.Services.AddScoped<IUserServices, UserServices>();
 
+// Configure CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend",
+        policy => policy
+            .WithOrigins("http://localhost:5147")
+            .AllowAnyMethod()
+            .AllowAnyHeader());
+});
+
 builder.Services.AddControllers();
 
 var app = builder.Build();
+
+// Use CORS middleware
+app.UseCors("AllowFrontend");
 
 app.UseHttpsRedirection();
 app.MapControllers();

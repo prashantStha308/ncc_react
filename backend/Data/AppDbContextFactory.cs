@@ -1,7 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
-using Microsoft.Extensions.Configuration;
-using System.IO;
 
 namespace backend.Data
 {
@@ -9,15 +7,17 @@ namespace backend.Data
     {
         public AppDbContext CreateDbContext(string[] args)
         {
-            // Load configuration from appsettings.json
+             string environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
+            // Load configuration from appsettings.json/appsettings.Development.json
             IConfigurationRoot configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json")
+                .AddJsonFile("appsettings.json", optional: false)
+                .AddJsonFile($"appsettings.{environment}.json", optional: true)
                 .Build();
 
             var builder = new DbContextOptionsBuilder<AppDbContext>();
 
-            // Get connection string from appsettings.json
+            // Get connection string from appsettings.json/appsettings.Development.json
             var connectionString = configuration.GetConnectionString("DefaultConnection");
 
             // Configure MySQL with auto-detected server version

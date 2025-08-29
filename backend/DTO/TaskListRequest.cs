@@ -1,5 +1,3 @@
-using System;
-
 namespace backend.DTO;
 
 public class TaskListRequest(string name, string? desc)

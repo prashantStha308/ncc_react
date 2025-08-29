@@ -1,4 +1,3 @@
-using backend.Constants;
 using backend.Data;
 using backend.DTO;
 using backend.Helpers;
@@ -13,12 +12,12 @@ using TaskResult = Result<TaskItem>;
 public class TaskServices : ITaskService
 {
     private readonly AppDbContext _context;
-    private readonly AuthenticateAndValidate _auth;
+    private readonly RepositoryHelper _repo;
 
-    public TaskServices(AppDbContext context, AuthenticateAndValidate auth)
+    public TaskServices(AppDbContext context, RepositoryHelper repo)
     {
         _context = context;
-        _auth = auth;
+        _repo = repo;
     }
 
     public TaskResult AddTaskInList(Guid listId, TaskRequest requestDto)
@@ -26,9 +25,7 @@ public class TaskServices : ITaskService
         try
         {
             TaskItem newTask = new(listId, requestDto.Name, requestDto.Desc);
-
-            _context.TaskSet.Add(newTask);
-            _context.SaveChanges();
+            _repo.AddDataToContextAndSave<TaskItem>(newTask);
 
             return TaskResult.Ok(newTask, "Task added successfully", 201);
         }
@@ -42,7 +39,7 @@ public class TaskServices : ITaskService
     {
         try
         {
-            List<TaskItem> tasks = _context.TaskSet.ToList();
+            List<TaskItem> tasks = _repo.GetAllData<TaskItem>();
             return Result<List<TaskItem>>.Ok(tasks, "Fetched All Tasks", 200);
         }
         catch (ApiError e)
@@ -56,10 +53,7 @@ public class TaskServices : ITaskService
     {
         try
         {
-            TaskItem? target = _auth.ValidateExistance(_context.TaskSet.FirstOrDefault(item => item.TaskId == taskId));
-
-            _context.TaskSet.Remove(target);
-            _context.SaveChanges();
+            _repo.DeleteDataByIdAndSave<TaskItem>(taskId);
 
             return TaskResult.Ok("Deleted Task successfully", 200);
         }
@@ -74,7 +68,7 @@ public class TaskServices : ITaskService
     {
         try
         {
-            TaskItem? target = _auth.ValidateExistance(_context.TaskSet.FirstOrDefault(task => task.TaskId == taskId));
+            TaskItem target = _repo.GetDataById<TaskItem>(taskId);
 
             if (requestDto.Name != null) target.TaskName = requestDto.Name;
             if (requestDto.Desc != null) target.Desc = requestDto.Desc;
@@ -93,9 +87,7 @@ public class TaskServices : ITaskService
     {
         try
         {
-            TaskItem? target = _context.TaskSet.FirstOrDefault(task => task.TaskId == taskId);
-
-            if (target == null) return TaskResult.Fail(ErrorMessages.ItemNotFoundWithId("TaskItem", taskId), 404);
+            TaskItem? target = _repo.GetDataById<TaskItem>(taskId);
 
             return TaskResult.Ok(target, "Successfully Fetched Task", 200);
         }
@@ -109,9 +101,7 @@ public class TaskServices : ITaskService
     {
         try
         {
-            TaskItem? target = _context.TaskSet.FirstOrDefault(task => task.TaskId == taskId);
-
-            if (target == null) return Result<bool>.Fail(ErrorMessages.ItemNotFoundWithId("TaskItem", taskId), 404);
+            TaskItem? target = _repo.GetDataById<TaskItem>(taskId);
 
             return Result<bool>.Ok("Toggled task's Status", 200);
         }

@@ -1,5 +1,3 @@
-using System;
-
 namespace backend.DTO;
 
 public class UserResponse(string userName, Guid userId)

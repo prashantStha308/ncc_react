@@ -63,6 +63,9 @@ namespace backend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
+                    b.Property<int>("CompletedTaskCount")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime(6)");
 
@@ -81,6 +84,9 @@ namespace backend.Migrations
 
                     b.Property<Guid>("OwnerId")
                         .HasColumnType("char(36)");
+
+                    b.Property<int>("TaskCount")
+                        .HasColumnType("int");
 
                     b.HasKey("ListId");
 

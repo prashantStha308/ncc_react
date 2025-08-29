@@ -1,5 +1,3 @@
-using System;
-
 namespace backend.DTO;
 
 public class UserRequests_Register( string userName, string email, string password)
