@@ -14,16 +14,33 @@ namespace backend.Controllers
             _services = services;
         }
 
-        [HttpGet("")]
-        public IActionResult GetAll()
+        [HttpGet("{userId}")]
+        public IActionResult GetAllUserTasks(Guid userId)
         {
-            var res = _services.GetAllTasks();
+            var res = _services.GetAllTasks(userId);
             if (!res.Success) return BadRequest(res);
 
             return Ok(res);
         }
 
-        [HttpPost("{listId}/tasks")]
+        [HttpGet("recently-updated")]
+        public IActionResult GetRecentlyUpdated()
+        {
+            var limitString = Request.Query["limit"];
+
+            int limit = 10; 
+            if (!string.IsNullOrEmpty(limitString) && int.TryParse(limitString, out var parsed))
+            {
+                limit = parsed;
+            }
+
+            var res = _services.GetLatestUpdatedTasks(limit);
+            if (!res.Success) return BadRequest(res);
+
+            return Ok(res);
+        }
+
+        [HttpPost("{listId}/add")]
         public IActionResult AddTask(Guid listId, [FromBody] TaskRequest requestDto)
         {
             var res = _services.AddTaskInList(listId, requestDto);
@@ -42,9 +59,9 @@ namespace backend.Controllers
         }
 
         [HttpPatch("toggle/{taskId}")]
-        public IActionResult ToggleTaskCompletion(Guid taskId)
+        public IActionResult ToggleTaskCompletion(Guid taskId, [FromBody] TaskRequest_status status)
         {
-            var res = _services.ToggleTaskStatusById(taskId);
+            var res = _services.ToggleTaskStatusById(taskId, status);
             if (!res.Success) return BadRequest(res);
 
             return Ok(res);

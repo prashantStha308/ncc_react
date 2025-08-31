@@ -1,5 +1,7 @@
 using System;
 using backend.Data;
+using backend.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace backend.Helpers;
 
@@ -12,16 +14,32 @@ public class RepositoryHelper
         _context = context;
     }
 
-        public List<T> GetAllData<T>() where T : class
+    public List<T> GetAllData<T>(Guid userId, bool includeTasks = false) where T : class
     {
-        List<T> datas = _context.Set<T>().ToList();
-        return datas;
+        IQueryable<T> query = _context.Set<T>();
+
+        if (includeTasks && typeof(T) == typeof(TaskList))
+        {
+            query = query.Cast<TaskList>()
+                        .Include(t => t.List)
+                        .Where(t => t.OwnerId == userId)
+                        .Cast<T>();
+        }
+
+        return query.ToList();
     }
 
-    public T GetDataById<T>(Guid id) where T : class
+    public T GetDataById<T>(Guid id, bool includeTasks = false) where T : class
     {
-        T? target = _context.Set<T>().Find(id);
+        if (includeTasks && typeof(T) == typeof(TaskList))
+        {
+            return _context.Set<TaskList>()
+                        .Include(t => t.List)
+                        .FirstOrDefault(t => t.ListId == id) as T
+                ?? throw new ApiError($"{typeof(T).Name} not found", 404);
+        }
 
+        T? target = _context.Set<T>().Find(id);
         if (target == null)
             throw new ApiError($"{typeof(T).Name} not found", 404);
 

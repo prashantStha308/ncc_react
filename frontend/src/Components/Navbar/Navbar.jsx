@@ -15,18 +15,20 @@ const Navbar = () => {
 
 
     return (
-        <section className="fixed left-0 top-0 bg-bgLight py-4 px-8 w-[15rem] min-h-screen box-border flex flex-col gap-8 text-textDark">
+        <section className="fixed left-0 top-0 bg-bgLight py-4 px-8 w-[15rem] min-h-screen box-border hidden md:flex flex-col gap-8 text-textDark">
             <header>
-                <h1 className="text-3xl text-center text-accentDark font-black underline" > Aligner </h1>
+                <Link to={'/'} >
+                    <h1 className="text-3xl text-center text-accentDark font-black underline" > Aligner </h1>
+                </Link>
             </header>
 
-            <nav className="flex flex-col gap-8" >
-                <div className="flex items-center gap-4">
-                    {/* <div className="w-9 h-9 rounded-full overflow-hidden" >
-                        <img src="~/assets/images/default.jpeg" alt="Default image" className=" object-center" />
-                    </div> */}
-                    <p className=" font-bold text-xl line-clamp-1 " > ___________ </p>
-                </div>
+            <nav className="w-full flex flex-col gap-8 " >
+                <Link
+                    to={"/login"}
+                    className="gap-4 border border-textDark bg-textDark hover:bg-textDark/80 text-bgLight px-6 py-1 rounded-sm transition-all ease-in-out duration-100 text-center shadow"
+                >
+                    Login
+                </Link>
 
                 <NavbarList />
 

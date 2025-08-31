@@ -15,19 +15,19 @@ namespace backend.Controllers
             _services = services;
         }
 
-        [HttpPost("")]
-        public IActionResult CreateList([FromBody] TaskListRequest request)
+        [HttpPost("{userId}")]
+        public IActionResult CreateList(Guid? userId, [FromBody] TaskListRequest request)
         {
-            var res = _services.CreateList(request);
+            var res = _services.CreateList(userId, request);
             if (!res.Success) return BadRequest(res);
 
             return Created("", res);
         }
 
-        [HttpGet("")]
-        public IActionResult GetAllLists()
+        [HttpGet("{ownerId}")]
+        public IActionResult GetAllLists(Guid ownerId)
         {
-            var res = _services.GetAllLists();
+            var res = _services.GetAllLists(ownerId);
             if (!res.Success) return BadRequest(res);
 
             return Ok(res);

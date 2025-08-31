@@ -1,10 +1,11 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 const Hero = () => {
     return (
         <>
             <section id="hero" className="bg-bgLight w-full flex-1 px-8 lg:px-16 py-12">
-                <div className="h-full flex items-center justify-between max-w-6xl mx-auto">
+                <div className="h-full flex flex-col-reverse gap-6 md:gap-0 md:flex-row items-center justify-between max-w-6xl mx-auto">
                     {/* Left side - Text content */}
                     <div className="flex-1 pr-12">
                         <h1 className="text-3xl lg:text-5xl xl:text-6xl font-bold text-textDark leading-tight">
@@ -15,17 +16,17 @@ const Hero = () => {
                         <p className="text-textDark opacity-80 text-base lg:text-lg mt-6 max-w-lg leading-relaxed">
                             Stay organized, productive, and on top of your daily goals with our intuitive tracking system.
                         </p>
-                        <div className="mt-8 flex flex-wrap gap-4">
-                            <button className="bg-accentDark text-white px-8 py-3 rounded-lg font-semibold hover:bg-opacity-90 transition-all text-sm lg:text-base cursor-pointer">
+                        <div className="mt-8 flex justify-between md:justify-start md:flex-wrap gap-4">
+                            <Link to={'/login'} className="bg-accentDark text-white px-6 py-2 rounded-lg font-semibold hover:bg-opacity-90 transition-all text-sm lg:text-base cursor-pointer items-center flex">
                                 Get Started
-                            </button>
-                            <button className="border-2 border-accentDark text-accentDark px-8 py-3 rounded-lg font-semibold hover:bg-accentDark hover:text-white transition-all text-sm lg:text-base cursor-pointer">
+                            </Link>
+                            <Link to={'/about'} className="border-2 border-accentDark text-accentDark px-6 py-2 rounded-lg font-semibold hover:bg-accentDark hover:text-white transition-all text-sm lg:text-base cursor-pointer items-center flex">
                                 Learn More
-                            </button>
+                            </Link>
                         </div>
                     </div>
 
-                    {/* Right side - Illustration */}
+                    {/* Illustration */}
                     <div className="flex-1 max-w-sm">
                         <div className="bg-gradient-to-br from-accentLight to-accentDark bg-opacity-20 rounded-2xl p-12 aspect-square flex items-center justify-center">
                             <div className="text-center">

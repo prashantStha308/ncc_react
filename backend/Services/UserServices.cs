@@ -26,7 +26,7 @@ public class UserServices : IUserServices
 
     private UserModel GetUserByEmail(string email)
     {
-        if (new EmailAddressAttribute().IsValid(email))
+        if (!new EmailAddressAttribute().IsValid(email))
             throw new ApiError("Invalid Email.", 400);
 
         var user = _auth.ValidateExistance( _context.UserSet.FirstOrDefault(u => u.Email == email) );
@@ -34,11 +34,21 @@ public class UserServices : IUserServices
         return user;
     }
 
+    private void ValidateUserEmail(string email)
+    {
+        if (!new EmailAddressAttribute().IsValid(email))
+            throw new ApiError("Invalid Email.", 400);
+
+        bool exists = _context.UserSet.Any(u => u.Email == email);
+        if (exists)
+            throw new ApiError("User with this email already exists.", 400);
+    }
+
     public UserResult Register(UserRequests_Register registerDto)
     {
         try
         {
-            UserModel? target = GetUserByEmail(registerDto.Email);
+            ValidateUserEmail(registerDto.Email);
 
             // Generate hashed Password
             string hashedPassword = _auth.GetHashedPassword(null, registerDto.Password);
@@ -47,7 +57,7 @@ public class UserServices : IUserServices
 
             _repo.AddDataToContextAndSave<UserModel>(newUser);
 
-            return UserResult.Ok("Registered User Successfully");
+            return UserResult.Ok(newUser,"Registered User Successfully");
         }
         catch (ApiError e)
         {

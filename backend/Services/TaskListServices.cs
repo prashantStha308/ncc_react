@@ -18,14 +18,22 @@ public class TaskListServices : ITaskListServices
         _context = context;
         _repo = repo;
     }
-    public ListResult CreateList( TaskListRequest request )
+    public ListResult CreateList( Guid? userId, TaskListRequest request )
     {
         try
         {
-            TaskList NewList = new(request.Name, request.Desc!);
-            _repo.AddDataToContextAndSave<TaskList>(NewList);
+            TaskList newList;
+            if (userId.HasValue)
+            {
+                newList = new TaskList(userId.Value, request.Name, request.Desc ?? "");
+            }
+            else
+            {
+                newList = new TaskList(request.Name, request.Desc ?? "");
+            }
+            _repo.AddDataToContextAndSave<TaskList>(newList);
 
-            return ListResult.Ok(NewList, "List Created successfully", 201);
+            return ListResult.Ok(newList, "List Created successfully", 201);
         }
         catch (ApiError e)
         {
@@ -64,11 +72,11 @@ public class TaskListServices : ITaskListServices
         }
     }
 
-    public Result<List<TaskList>> GetAllLists()
+    public Result<List<TaskList>> GetAllLists(Guid ownerId)
     {
         try
         {
-            List<TaskList> taskLists = _repo.GetAllData<TaskList>();
+            List<TaskList> taskLists = _repo.GetAllData<TaskList>(ownerId, includeTasks: true);
             return Result<List<TaskList>>.Ok(taskLists, "Fetched all Lists Successfully", 200);
         }
         catch (ApiError e)
@@ -81,7 +89,7 @@ public class TaskListServices : ITaskListServices
     {
         try
         {
-            TaskList? target = _repo.GetDataById<TaskList>(listId);
+            TaskList? target = _repo.GetDataById<TaskList>(listId, includeTasks: true);
 
             return ListResult.Ok(target, "Successfully Fetched List", 200);
         }

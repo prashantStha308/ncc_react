@@ -4,18 +4,22 @@ namespace backend.Models;
 
 public class TaskList
 {
+    [Key]
+    public Guid ListId { get; set; } = Guid.NewGuid();
+    public Guid OwnerId { get; set; }
+
     public string Name { get; set; }
     public string? Desc { get; set; }
+
     public int TaskCount { get; set; }
     public int CompletedTaskCount { get; set; }
     public bool IsCompleted { get; set; } = false;
+
     public DateTime DateCreated { get; init; } = DateTime.UtcNow;
     public DateTime LastUpdated { get; set; }
+    
     public List<TaskItem> List { get; set; } = new List<TaskItem>();
 
-    public Guid OwnerId { get; set; }
-    [Key]
-    public Guid ListId { get; set; } = Guid.NewGuid();
 
     // Deafult constructor for EF
     public TaskList() { }

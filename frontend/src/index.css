@@ -5,6 +5,13 @@
     --color-accentLight: #FFDBB6;
     --color-bgLight: #FFF2EF;
     --color-textDark: #5D688A;
+    --color-dark: #171A21;
+
+    /* Set accent colrors for borders */
+
+    --color-accentGreen: @apply bg-green-600;
+    --color-accentYellow: oklch(90.5% 0.182 98.111);
+
 }
 
 .nav-list-item {

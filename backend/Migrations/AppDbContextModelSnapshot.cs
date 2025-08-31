@@ -43,6 +43,16 @@ namespace backend.Migrations
                     b.Property<Guid>("ListId")
                         .HasColumnType("char(36)");
 
+                    b.Property<Guid>("OwnerId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("ParentList")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
                     b.Property<Guid?>("TaskListListId")
                         .HasColumnType("char(36)");
 
@@ -50,9 +60,14 @@ namespace backend.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<Guid?>("UserModelUser_Id")
+                        .HasColumnType("char(36)");
+
                     b.HasKey("TaskId");
 
                     b.HasIndex("TaskListListId");
+
+                    b.HasIndex("UserModelUser_Id");
 
                     b.ToTable("TaskSet");
                 });
@@ -127,11 +142,20 @@ namespace backend.Migrations
                     b.HasOne("backend.Models.TaskList", null)
                         .WithMany("List")
                         .HasForeignKey("TaskListListId");
+
+                    b.HasOne("backend.Models.UserModel", null)
+                        .WithMany("Bookmarked")
+                        .HasForeignKey("UserModelUser_Id");
                 });
 
             modelBuilder.Entity("backend.Models.TaskList", b =>
                 {
                     b.Navigation("List");
+                });
+
+            modelBuilder.Entity("backend.Models.UserModel", b =>
+                {
+                    b.Navigation("Bookmarked");
                 });
 #pragma warning restore 612, 618
         }

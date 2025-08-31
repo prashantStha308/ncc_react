@@ -12,9 +12,9 @@ const NavbarList = () => {
                         Home
                 </li>
             </Link>
-            <Link to={'/test'}>
-                <li className={`nav-list-item ${currentPage === "test" ? "text-accentDark font-bold" : "text-textDark" } `}>
-                        Test
+            <Link to={'/todo'}>
+                <li className={`nav-list-item ${currentPage === "todo" ? "text-accentDark font-bold" : "text-textDark" } `}>
+                        Todo
                 </li>
             </Link>
             <Link to={'/privacy'}>
