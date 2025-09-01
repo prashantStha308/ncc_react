@@ -28,6 +28,7 @@ namespace backend.Controllers
         [HttpPost("login")]
         public IActionResult Login([FromBody] UserRequests_Login login)
         {
+            Console.WriteLine("Login Controller Hit");
             var res = _services.LogIn(login);
             if (!res.Success) return BadRequest(res);
 

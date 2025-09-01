@@ -23,7 +23,7 @@ const ButtonDefault = ({
       onClick={onClick}
       disabled={disabled}
       type={type}
-      className={`rounded-sm text-sm md:text-base px-4 p-1.5 flex items-center gap-2 cursor-pointer ${className}`}
+      className={`rounded-sm ${className.length == 0 && "bg-textDark text-bgLight"} text-sm md:text-base px-4 p-1.5 flex items-center gap-2 cursor-pointer ${className}`}
       style={style}
     >
       {leftIcon && <span className="flex-shrink-0">{leftIcon}</span>}

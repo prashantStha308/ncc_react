@@ -8,7 +8,7 @@ import useNavbarStore from "../../store/navbar.store.js";
 const TodoHeader = () => {
     const { searchKey, setSearchKey, newTaskData, setNewTaskData, setSpawnPoint, spawnPoint, setIsAddTaskOpen } = useNavbarStore();
     const handleExpand = (e) => {
-        console.log("Clicking");
+        console.log("Clicking",e);
         setSpawnPoint({
             x: e.clientX - window.innerWidth / 2,
             y: e.clientY - window.innerHeight / 2

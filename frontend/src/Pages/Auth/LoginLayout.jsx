@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useUserStore } from "../../store/user.store.js";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const LoginLayout = () => {
     const { login } = useUserStore(); // get login action
@@ -9,6 +9,8 @@ const LoginLayout = () => {
         Email: "",
         Password: ""
     });
+
+    const naviage = useNavigate();
 
     const handleChange = (e) => {
         const {name, value} = e.target;
@@ -24,6 +26,7 @@ const LoginLayout = () => {
         const res = await login(formData);
         if (res?.success) {
             console.log("Logged in:", res.data);
+            naviage('/todo');
         } else {
             console.error("Failed to login:", res?.message);
         }

@@ -25,18 +25,14 @@ export const Login = async (objectData) => {
     try {
         // Validate paxi
         const res = await axios.post(`${BASEAPI}/api/user/login`, objectData);
+        console.log(res.data.success);
         if (!res.data.success) {
             throw new Error(res.data.message);
         }
 
-        return res.data.data;
+        return res.data;
     } catch (error) {
         console.error("Failed to login:", error);
-
-        if (error.response && error.response.data) {
-            return error.response.data;
-        } else {
-            return { success: false, message: error.message };
-        }
+         return error.response?.data || { success: false, message: error.message };
     }
 }

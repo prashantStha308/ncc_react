@@ -16,32 +16,32 @@ const NavbarMobile = () => {
     },[location, currentPage])
 
     return (
-        <nav className="flex justify-between items-center p-2 text-accentDark" >
+        <nav className="flex justify-between items-center p-2 text-accentDark border-t border-accentLight " >
             
-            <Link className="px-3 py-1 rounded-md active:bg-gray-300 transition-all duration-75 ease-in-out"  to={'/'} >
+            <Link className="px-3 py-1 rounded-md active:bg-accentLight transition-all duration-75 ease-in-out"  to={'/'} >
                 <div>
                     <Home size={25} strokeWidth={3} fill={ currentPage === 'home' ? '#F7A5A5' : "none" } strokeColor={ currentPage === 'home' ? "#5D688A" : "currentColor" } />
                 </div>
             </Link>
-            <Link className="px-3 py-1 rounded-md active:bg-gray-300 transition-all duration-75 ease-in-out"  to={'/todo'} >
+            <Link className="px-3 py-1 rounded-md active:bg-accentLight transition-all duration-75 ease-in-out"  to={'/todo'} >
                 <div>
                     <ListTodo size={25} strokeWidth={1} fill={currentPage === 'todo' ? '#F7A5A5' : "none"} strokeColor={currentPage === 'todo' ? '#5D688A' : "currentColor"}/>
 
                 </div>
             </Link>
-            <Link className="px-3 py-1 rounded-md active:bg-gray-300 transition-all duration-75 ease-in-out" to={'/publish'} >
+            <Link className="px-3 py-1 rounded-md active:bg-accentLight transition-all duration-75 ease-in-out" to={'/publish'} >
                 <div>
                     <BadgePlus className={`${currentPage === 'upload' && "fill-red-500 text-white " }`} size={35} strokeWidth={1} />
                 </div>
             </Link>
-            <Link className="px-4 py-2 rounded-md active:bg-gray-300 transition-all duration-75 ease-in-out"  to={'/library'} >
+            <Link className="px-4 py-2 rounded-md active:bg-accentLight transition-all duration-75 ease-in-out"  to={'/library'} >
                 <div>
                     <Library size={20} strokeWidth={3} fill={ currentPage === 'library' ? '#F7A5A5' : "none" } strokeColor={ currentPage === 'library' ? '#F7A5A5' : "currentColor" } />
                 </div>
             </Link>
-            <Link to={'/login'} className="px-3 py-1 rounded-md active:bg-gray-300 transition-all duration-75 ease-in-out" >
+            <Link to={'/login'} className="px-3 py-1 rounded-md active:bg-accentLight transition-all duration-75 ease-in-out" >
                 <div>
-                    <div className="w-9 h-9 bg-gray-400 rounded-full"></div>
+                    <div className="w-8 h-8 bg-accentDark rounded-full"></div>
                 </div>
             </Link>
         </nav>

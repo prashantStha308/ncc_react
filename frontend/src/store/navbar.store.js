@@ -32,7 +32,7 @@ const NavbarStore = create((set) => ({
     setHistoryStack: (stack) => set({ historyStack: stack }),
 
     setIsAddTaskOpen: (state) => set({ isAddTaskOpen: state }),
-    setSpawnPoint: (obj) => set({spawnPoint: {...obj}}),
+    setSpawnPoint: (obj) => set({ spawnPoint: { ...obj } }),
 
     // operations
     pushHistory: (path) => set((state) => ({ historyStack: [...state.historyStack, path] })),

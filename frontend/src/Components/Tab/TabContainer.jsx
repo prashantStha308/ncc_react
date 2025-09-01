@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import Tab from "./Tab";
 import { useTaskStore } from "../../store/task.store";
 import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry';
@@ -6,12 +5,13 @@ import { Plus } from "lucide-react";
 import AddTaskForm from "./AddTaskForm";
 import useNavbarStore from "../../store/navbar.store";
 
-const TabContainer = () => {
+const TabContainer = ( {isLoggedIn = false} ) => {
     const { setSpawnPoint, spawnPoint, setIsAddTaskOpen } = useNavbarStore();
-    const { tasks = [], fetchAllTasks, } = useTaskStore();
+    const { tasks = [], fetchAllTasks } = useTaskStore();
 
     const handleExpand = (e) => {
         console.log("Clicking");
+        document.body.classList.add("overflow-hidden");
         setSpawnPoint({
             x: e.clientX - window.innerWidth / 2,
             y: e.clientY - window.innerHeight / 2
@@ -29,11 +29,11 @@ const TabContainer = () => {
     ];
 
     return (
-        <section className={`h-full w-full ${tasks.length === 0 && "flex justify-center items-center min-h-[calc(100vh-4rem)]"}`}>
+        <section className={`h-full w-full ${isLoggedIn === 0 && "flex justify-center items-center min-h-[calc(100vh-4rem)]"}`}>
             <AddTaskForm spawnPoint={spawnPoint} />
             
             {
-                tasks.length !== 0 ?
+                isLoggedIn ?
                     <ResponsiveMasonry columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 3 }}>
                         <Masonry gutter="20px">
                             {tabs.map((tab, index) => (
