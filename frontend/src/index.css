@@ -17,3 +17,23 @@
 .nav-list-item {
     @apply hover:bg-accentLight hover:text-accentDark active:bg-textDark/55 active:text-white/45 rounded-lg px-8 py-2 text-lg flex items-start transition-all ease-in-out duration-100 hover:font-semibold;
 }
+
+.form{
+    @apply flex flex-col;
+}
+
+.form-div{
+    @apply flex flex-col;
+}
+
+.form-label{
+    @apply mb-1 font-semibold text-textDark;
+}
+
+.input-text{
+    @apply border-2 border-accentLight rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accentDark transition;
+}
+
+button{
+    @apply cursor-pointer;
+}

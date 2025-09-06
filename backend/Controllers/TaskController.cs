@@ -14,7 +14,7 @@ namespace backend.Controllers
             _services = services;
         }
 
-        [HttpGet("{userId}")]
+        [HttpGet("{userId}/all")]
         public IActionResult GetAllUserTasks(Guid userId)
         {
             var res = _services.GetAllTasks(userId);
@@ -40,7 +40,7 @@ namespace backend.Controllers
             return Ok(res);
         }
 
-        [HttpPost("{listId}/add")]
+        [HttpPost("add/{listId}")]
         public IActionResult AddTask(Guid listId, [FromBody] TaskRequest requestDto)
         {
             var res = _services.AddTaskInList(listId, requestDto);

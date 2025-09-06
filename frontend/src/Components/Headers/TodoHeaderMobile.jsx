@@ -4,17 +4,11 @@ import { Library, ChevronDown, Search } from "lucide-react";
 import Dropdown from "../Dropdown/Dropdown.jsx";
 import DropdownItem from "../Dropdown/DropdownItem.jsx";
 import useNavbarStore from "../../store/navbar.store.js";
+import useWindowHelper from "../../Helpers/window.helper.js";
 
 const TodoHeaderMobile = () => {
-    const { searchKey, setSearchKey, newTaskData, setNewTaskData, setSpawnPoint, spawnPoint, setIsAddTaskOpen } = useNavbarStore();
-    const handleExpand = (e) => {
-        console.log("Clicking", e);
-        setSpawnPoint({
-            x: e.clientX - window.innerWidth / 2,
-            y: e.clientY - window.innerHeight / 2
-        });
-        setIsAddTaskOpen(true);
-    }
+    const { searchKey, setSearchKey } = useNavbarStore();
+    const { handleExpand } = useWindowHelper();
 
     return (
         <section className="md:hidden grid gap-2 justify-center w-full" >
@@ -41,7 +35,7 @@ const TodoHeaderMobile = () => {
                 textFinal="text-white"
                 className=" w-full flex justify-center py-3 "
                 classNameActive=" w-full flex justify-center py-3"
-                onClick ={handleExpand}
+                onClick ={(e)=> handleExpand(e)}
             />
 
             <div className="w-full flex items-center justify-between gap-2 " >

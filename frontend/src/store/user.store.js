@@ -1,7 +1,8 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 import { RegisterUser, Login } from "../services/user.services";
 
-export const useUserStore = create((set) => ({
+export const useUserStore = create(persist((set) => ({
     user: null,
     isLoggedIn: false,
     lists: [],
@@ -54,4 +55,8 @@ export const useUserStore = create((set) => ({
 
     // Set user lists
     setLists: (lists) => set({ lists }),
-}));
+}),
+    {
+        name: 'logged-user',
+    }
+));

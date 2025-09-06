@@ -4,24 +4,16 @@ import useNavbarStore from "../../store/navbar.store";
 import { useEffect } from "react";
 import { useUserStore } from "../../store/user.store";
 import UserDetail from "./UserDetail";
+import useWindowHelper from "../../Helpers/window.helper";
 
 const Navbar = () => {
 
-    const { currentPage, setCurrentPage, setSpawnPoint, spawnPoint, setIsAddTaskOpen } = useNavbarStore();
-    const { isLoggedIn, user } = useUserStore();
+    const { currentPage, setCurrentPage } = useNavbarStore();
+    const { handleExpand } = useWindowHelper();
+    const { isLoggedIn } = useUserStore();
     const location = useLocation();
 
-    const buttonClass = "gap-4 border border-textDark bg-textDark hover:bg-textDark/80 text-bgLight px-6 py-1 rounded-sm transition-all ease-in-out duration-100 text-center shadow cursor-pointer";
-
-    const handleExpand = (e) => {
-        console.log("Clicking");
-        document.body.classList.add("overflow-hidden");
-        setSpawnPoint({
-            x: e.clientX - window.innerWidth / 2,
-            y: e.clientY - window.innerHeight / 2
-        });
-        setIsAddTaskOpen(true);
-    }
+    const buttonClass = "gap-4 border border-accentDark bg-accentDark hover:bg-accentDark/80 text-bgLight px-6 py-1 rounded-sm transition-all ease-in-out duration-100 text-center shadow cursor-pointer";
 
     useEffect(() => {
         const path = location.pathname.substring(1).split('/')[0] || "home";
@@ -40,7 +32,10 @@ const Navbar = () => {
             <nav className="w-full flex flex-col gap-8 " >
                 {
                     isLoggedIn ?
-                        <button className={buttonClass} onClick={handleExpand} > Add Task </button>
+                        <button
+                            className={buttonClass}
+                            onClick={(e) => handleExpand(e)}
+                        > Add Task </button>
                         :
                         <Link
                             to={"/login"}

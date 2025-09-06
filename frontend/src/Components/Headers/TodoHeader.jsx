@@ -4,17 +4,11 @@ import { Library, ChevronDown, Search } from "lucide-react";
 import Dropdown from "../Dropdown/Dropdown.jsx";
 import DropdownItem from "../Dropdown/DropdownItem.jsx";
 import useNavbarStore from "../../store/navbar.store.js";
+import useWindowHelper from "../../Helpers/window.helper.js";
 
 const TodoHeader = () => {
-    const { searchKey, setSearchKey, newTaskData, setNewTaskData, setSpawnPoint, spawnPoint, setIsAddTaskOpen } = useNavbarStore();
-    const handleExpand = (e) => {
-        console.log("Clicking",e);
-        setSpawnPoint({
-            x: e.clientX - window.innerWidth / 2,
-            y: e.clientY - window.innerHeight / 2
-        });
-        setIsAddTaskOpen(true);
-    } 
+    const { searchKey, setSearchKey } = useNavbarStore();
+    const { handleExpand } = useWindowHelper();
     
     return (
         <section className="hidden md:flex justify-evenly w-full" >
@@ -44,7 +38,7 @@ const TodoHeader = () => {
                 textFinal="text-white"
                 className="flex justify-center py-3 px-4"
                 classNameActive="flex justify-center py-3 px-4"
-                onClick ={handleExpand}
+                onClick ={(e)=> handleExpand(e)}
             />
 
             <ButtonDefault

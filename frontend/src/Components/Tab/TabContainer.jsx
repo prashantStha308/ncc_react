@@ -1,24 +1,20 @@
+import { motion } from "motion/react";
 import Tab from "./Tab";
 import { useTaskStore } from "../../store/task.store";
 import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry';
 import { Plus } from "lucide-react";
 import AddTaskForm from "./AddTaskForm";
-import useNavbarStore from "../../store/navbar.store";
+import { useUserStore } from "../../store/user.store";
+import useWindowHelper from "../../Helpers/window.helper";
+import { useWindowStore } from "../../store/window.store";
 
-const TabContainer = ( {isLoggedIn = false} ) => {
-    const { setSpawnPoint, spawnPoint, setIsAddTaskOpen } = useNavbarStore();
-    const { tasks = [], fetchAllTasks } = useTaskStore();
 
-    const handleExpand = (e) => {
-        console.log("Clicking");
-        document.body.classList.add("overflow-hidden");
-        setSpawnPoint({
-            x: e.clientX - window.innerWidth / 2,
-            y: e.clientY - window.innerHeight / 2
-        });
-        setIsAddTaskOpen(true);
-    }
-    
+const TabContainer = () => {
+    const { handleExpand } = useWindowHelper();
+    const { addTaskSpawnPoint } = useWindowStore();
+    const { tasks = [] } = useTaskStore();
+    const { isLoggedIn } = useUserStore();
+
 
     const tabs = [
         { title: "Last Reviewed", data: [...tasks].sort((a, b) => new Date(b.lastUpdated) - new Date(a.lastUpdated)) },
@@ -30,10 +26,10 @@ const TabContainer = ( {isLoggedIn = false} ) => {
 
     return (
         <section className={`h-full w-full ${isLoggedIn === 0 && "flex justify-center items-center min-h-[calc(100vh-4rem)]"}`}>
-            <AddTaskForm spawnPoint={spawnPoint} />
+            <AddTaskForm spawnPoint={addTaskSpawnPoint} />
             
             {
-                isLoggedIn ?
+                isLoggedIn && tasks.length !== 0 ?
                     <ResponsiveMasonry columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 3 }}>
                         <Masonry gutter="20px">
                             {tabs.map((tab, index) => (
@@ -43,7 +39,7 @@ const TabContainer = ( {isLoggedIn = false} ) => {
                     </ResponsiveMasonry>
                     :
                     <div className="text-center p-8 max-w-md mx-auto">
-                        {/* Icon/Visual Element */}
+                        {/* Icons */}
                         <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-accentLight to-accentDark rounded-full flex items-center justify-center shadow-lg">
                             <Plus size={48} className="text-bgLight" />
                         </div>
@@ -58,14 +54,21 @@ const TabContainer = ( {isLoggedIn = false} ) => {
                         </p>
         
                         {/* Call to Action Button */}
-                        <button
-                            className="bg-gradient-to-r from-accentDark to-accentLight text-white px-8 py-3 rounded-full font-semibold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200 hover:scale-105"
-                            onClick={handleExpand}
+                        <motion.button
+                            whileHover={{
+                                scale: 1.15,
+                                rotate: -3
+                            }}
+                            whileTap={{
+                                scale: 0.98,
+                                rotate: -5
+                            }}
+                            className=" bg-accentDark  text-white px-8 py-3 rounded-full font-semibold text-lg shadow-lg transform cursor-pointer"
+                            onClick={(e) => handleExpand(e)}
                         >
                             Add Your First Task
-                        </button>
+                        </motion.button>
         
-                        {/* Subtle Background Decoration */}
                         <div className="absolute inset-0 -z-10 opacity-5">
                             <div className="w-96 h-96 bg-accentLight rounded-full blur-3xl absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"></div>
                         </div>

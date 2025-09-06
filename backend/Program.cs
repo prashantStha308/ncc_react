@@ -28,7 +28,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend",
         policy => policy
-            .WithOrigins("http://localhost:5173")
+            .WithOrigins("http://localhost:5173", "https://z36mf9sd-5173.inc1.devtunnels.ms")
             .AllowAnyMethod()
             .AllowAnyHeader());
 });
@@ -39,8 +39,8 @@ var app = builder.Build();
 
 
 app.UseHttpsRedirection();
-app.UseRouting();
 app.UseCors("AllowFrontend");
+app.UseRouting();
 app.UseAuthorization();   
 app.MapControllers();
 

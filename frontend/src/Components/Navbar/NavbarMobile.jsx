@@ -4,10 +4,12 @@ import useNavbarStore from "../../store/navbar.store.js";
 import Home from '../icons/Home'
 import Library from "../icons/Library.jsx";
 import { ListTodo, BadgePlus,  } from "lucide-react";
+import useWindowHelper from '../../Helpers/window.helper.js';
 
 
 const NavbarMobile = () => {
     const { currentPage, setCurrentPage } = useNavbarStore();
+    const { handleExpand } = useWindowHelper();
     const location = useLocation();
 
     useEffect(() => {
@@ -29,11 +31,15 @@ const NavbarMobile = () => {
 
                 </div>
             </Link>
-            <Link className="px-3 py-1 rounded-md active:bg-accentLight transition-all duration-75 ease-in-out" to={'/publish'} >
-                <div>
+
+            {/* Create Task */}
+            <div className="px-3 py-1 rounded-md active:bg-accentLight transition-all duration-75 ease-in-out"  >
+                <button onClick={(e) => handleExpand(e)} >
                     <BadgePlus className={`${currentPage === 'upload' && "fill-red-500 text-white " }`} size={35} strokeWidth={1} />
-                </div>
-            </Link>
+                </button>
+            </div>
+
+
             <Link className="px-4 py-2 rounded-md active:bg-accentLight transition-all duration-75 ease-in-out"  to={'/library'} >
                 <div>
                     <Library size={20} strokeWidth={3} fill={ currentPage === 'library' ? '#F7A5A5' : "none" } strokeColor={ currentPage === 'library' ? '#F7A5A5' : "currentColor" } />

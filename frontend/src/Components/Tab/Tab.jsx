@@ -11,8 +11,6 @@ const Tab = ({title = "Last Reviewed", tasks }) => {
     });
 
 
-
-
     useEffect(() => {
         switch (title) {
             case "Last Reviewed":

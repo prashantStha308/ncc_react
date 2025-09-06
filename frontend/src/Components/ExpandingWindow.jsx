@@ -1,10 +1,13 @@
 import { motion } from "motion/react";
-import useNavbarStore from "../store/navbar.store";
+import Cross from "./icons/Cross";
 
-const ExpandingWindow = ({ children , setClose }) => {
-    
-    const { isAddTaskOpen: isOpen, spawnPoint } = useNavbarStore();
+const ExpandingWindow = ({ children, setClose, isOpen, spawnPoint = { x: 0, y: 0}, heading = "Pass your heading", ...props }) => {
 
+    const handleClose = (e) => {
+        if (!e.target.closest("#container")) {
+            setClose();
+        }
+    }
 
     return (
         <>
@@ -38,25 +41,35 @@ const ExpandingWindow = ({ children , setClose }) => {
                     ease: "easeOut"
                 }}
                 className="fixed inset-0 z-[9999] flex items-center justify-center overflow-hidden isolate"
-                onClick={(e) => {
-                    if (e.target === e.currentTarget) {
-                        setClose();
-                    }
-                }}
+                onClick={handleClose}
+                {...props}
             >
                 <motion.div
+                    id="container"
                     initial={{ scale: 0.9 }}
                     animate={{ scale: 1 }}
                     exit={{ scale: 0.9 }}
                     className="p-6 bg-bgLight rounded-xl shadow-lg w-full max-w-md mx-4"
-                    onClick={(e) => e.stopPropagation()}
                 >
+                    <div className="flex justify-between items-center mb-6">
+                        <h1 className="text-2xl font-bold text-accentDark">
+                            {heading}
+                        </h1>
+                        <button
+                            onClick={setClose}
+                            className="text-textDark hover:text-accentDark transition-colors cursor-pointer"
+                        >
+                            <Cross />
+                        </button>
+                    </div>
+
                     {children}
+
                 </motion.div>
 
                 {/* Bg ele */}
                 <motion.div
-                    animate={ 1== children ?
+                    animate={isOpen ?
                         {
                             backgroundColor:[ "#FFFFFF00", "#FFFFFF00", "#00000080" ]
                         } :

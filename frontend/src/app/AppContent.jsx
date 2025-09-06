@@ -2,10 +2,14 @@ import HeaderMobile from "../Components/Headers/HeaderMobile.jsx"
 import Navbar from "../Components/Navbar/Navbar.jsx"
 import NavbarMobile from "../Components/Navbar/NavbarMobile.jsx"
 import AppRoutes from "./App.routes.jsx"
+import Widows from "./Widows.jsx"
 
 const AppContent = () => {
     return (
         <main className="bg-bgLight min-h-screen max-w-screen flex flex-col md:flex-row gap-0">
+
+            <Widows />
+
             <HeaderMobile />
             <Navbar />
             <section className="flex-1 w-full md:ml-[15rem]">
