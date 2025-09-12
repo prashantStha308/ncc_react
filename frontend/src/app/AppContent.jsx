@@ -12,10 +12,10 @@ const AppContent = () => {
 
             <HeaderMobile />
             <Navbar />
-            <section className="flex-1 w-full md:ml-[15rem]">
+            <section className="relative w-full md:ml-[15rem]">
                 <AppRoutes />
             </section>
-            <div id="bottom-navbar" className="block md:hidden fixed bottom-0 left-0 right-0 bg-bgLight backdrop-blur-2xl z-40 transition-all duration-200 ease-in-out" >
+            <div id="bottom-navbar" className="block md:hidden fixed bottom-0 left-0 right-0 bg-white backdrop-blur-2xl z-40 transition-all duration-200 ease-in-out" >
                 <NavbarMobile />
             </div>
         </main>

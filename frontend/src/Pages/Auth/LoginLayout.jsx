@@ -13,6 +13,7 @@ const LoginLayout = () => {
     });
     const [revealPassword, setRevealPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState();
 
     const naviage = useNavigate();
 
@@ -39,6 +40,7 @@ const LoginLayout = () => {
             console.log("Logged in:", res.data);
             naviage('/todo');
         } catch (error) {
+            setError(error);
             console.error(error);
         } finally {
             setIsLoading(false);
@@ -125,6 +127,11 @@ const LoginLayout = () => {
                     </motion.button>
 
                 </form>
+                {error && (
+                    <p className="text-red-500 text-sm mt-4 text-center">
+                        {error.message || error.toString()}
+                    </p>
+                )}
             </motion.section>
         </section>
     );

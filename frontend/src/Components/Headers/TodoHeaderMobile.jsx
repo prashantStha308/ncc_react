@@ -8,10 +8,10 @@ import useWindowHelper from "../../Helpers/window.helper.js";
 
 const TodoHeaderMobile = () => {
     const { searchKey, setSearchKey } = useNavbarStore();
-    const { handleExpand } = useWindowHelper();
+    const { handleExpandAddTask } = useWindowHelper();
 
     return (
-        <section className="md:hidden grid gap-2 justify-center w-full" >
+        <section className="md:hidden grid gap-2 justify-center w-full z-50" >
             <ExpandingButton
                 text="Search Tasks"
                 placeholder="Search for Tasks.."
@@ -23,6 +23,8 @@ const TodoHeaderMobile = () => {
                 className=" w-full flex justify-center "
                 classNameActive=" w-full flex justify-center"
                 trigger={<Search size={20} />}
+                data={searchKey}
+                setData={setSearchKey}
             />
 
             <ExpandingButton
@@ -35,7 +37,7 @@ const TodoHeaderMobile = () => {
                 textFinal="text-white"
                 className=" w-full flex justify-center py-3 "
                 classNameActive=" w-full flex justify-center py-3"
-                onClick ={(e)=> handleExpand(e)}
+                onClick ={(e)=> handleExpandAddTask(e)}
             />
 
             <div className="w-full flex items-center justify-between gap-2 " >

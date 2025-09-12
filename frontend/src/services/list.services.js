@@ -1,9 +1,9 @@
 import axios from "axios";
 import { BASEAPI } from "../Constants";
 
-export const createTaskList = async ( objectData) => {
+export const createTaskList = async (ownerId, objectData) => {
     try {
-        const res = await axios.post(`${BASEAPI}/api/tasklist`, objectData);
+        const res = await axios.post(`${BASEAPI}/api/tasklist/${ownerId}`, objectData);
         if (!res.data.success) {
             throw new Error(res.data.message);
         }
@@ -20,9 +20,10 @@ export const createTaskList = async ( objectData) => {
     }
 }
 
-export const getAllTaskList = async() => {
+export const getAllTaskList = async(userId) => {
     try {
-        const res = await axios.get(`${BASEAPI}/api/tasklist/`);
+        const res = await axios.get(`${BASEAPI}/api/tasklist/all/${userId}`);
+        console.log(`${BASEAPI}/api/tasklist/all/${userId}`);
         if (!res.data.success) {
             throw new Error(res.data.message);
         }

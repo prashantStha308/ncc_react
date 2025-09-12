@@ -6,33 +6,48 @@ import { useUserStore } from "../store/user.store";
 const useWindowHelper = () => {
     const navigate = useNavigate();
     const { isLoggedIn } = useUserStore();
-    const { setAddTaskSpawnPoint, addTaskSpawnPoint, setAddTaskWindowStatus } = useWindowStore();
-    
-    const handleExpand = (e) => {
-        if (!isLoggedIn) {
-            navigate("/login");
-            setAddTaskWindowStatus(false);
-            return;
-        }
-        console.log("Clicking");
-        console.log(e.clientX);
-        console.log(e.clientY);
+    const { setSpawnPoint, setAddTaskWindowStatus, setCreateListStatus } = useWindowStore();
 
-        document.body.classList.add("overflow-hidden");
-
+    const handleSpawnPoint = (e) => {
         const spawn = {
             x: e.clientX - window.innerWidth / 2,
             y: e.clientY - window.innerHeight / 2
         }
 
-        setAddTaskSpawnPoint(spawn);
+        setSpawnPoint(spawn);
         console.log(spawn);
+    }
+    
+    const handleExpandAddTask = (e) => {
+        if (!isLoggedIn) {
+            navigate("/login");
+            setAddTaskWindowStatus(false);
+            return;
+        }
+
+        document.body.classList.add("overflow-hidden");
+        handleSpawnPoint(e);
+
         setAddTaskWindowStatus(true);
+    }
+
+    const handleExpandCreateList = (e) => {
+        if (!isLoggedIn) {
+            navigate("/login");
+            setCreateListStatus(false);
+            return;
+        }
+
+        document.body.classList.add("overflow-hidden");
+        handleSpawnPoint(e);
+
+        setCreateListStatus(true);
     }
 
 
     return ({
-        handleExpand,
+        handleExpandAddTask,
+        handleExpandCreateList,
     })
 
 }

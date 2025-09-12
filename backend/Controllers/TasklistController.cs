@@ -24,7 +24,7 @@ namespace backend.Controllers
             return Created("", res);
         }
 
-        [HttpGet("{ownerId}")]
+        [HttpGet("all/{ownerId}")]
         public IActionResult GetAllLists(Guid ownerId)
         {
             var res = _services.GetAllLists(ownerId);

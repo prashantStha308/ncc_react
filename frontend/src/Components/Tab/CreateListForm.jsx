@@ -1,16 +1,23 @@
 import ExpandingWindow from "../ExpandingWindow.jsx";
 import ButtonDefault from "../Buttons/ButtonDefault.jsx";
 import { useState } from "react";
+import { useListStore } from "../../store/list.store.js";
+import { useUserStore } from "../../store/user.store.js";
+import { useWindowStore } from "../../store/window.store.js";
 
 const CreateListForm = () => {
 
-    const [isOpen, setIsOpen] = useState(false);
+    const { createListStatus: isOpen, setCreateListStatus, spawnPoint } = useWindowStore();
+    const { createList, loading, error } = useListStore();
+    const { isLoggedIn, user } = useUserStore();
+
     const [formData, setFormData] = useState({
         Name: "",
         Desc: ""
     })
     
-    const setClose = () => setIsOpen(false);
+    const setClose = () => setCreateListStatus(false);
+    
     const handleChange = (e) => {
         const {name, value} = e.target;
         setFormData(prev =>({
@@ -19,24 +26,43 @@ const CreateListForm = () => {
         }))
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async(e) => {
         e.preventDefault();
+        try {
+            if (!isLoggedIn) {
+                throw new Error("NOt logged in");
+            }
+            console.log(formData);
+
+            await createList(user.userId, formData);
+
+            if (error) {
+                throw new Error(error);
+            }
+            setFormData({
+                Name: "",
+                Desc: ""
+            })
+            setClose();
+
+        } catch (e) {
+            console.log(e);
+        }
     }
 
     return (
-        <>
-            <ButtonDefault
-                onClick={()=> setIsOpen(true)}
+        <section className="z-50" >
+            <ExpandingWindow
+                isOpen={isOpen}
+                setClose={setClose}
+                spawnPoint={spawnPoint}
+                heading="Create a New List"
             >
-                Open Form
-            </ButtonDefault>
-
-            <ExpandingWindow isOpen={isOpen} setClose={setClose} heading="Create a New List" >
 
                 <form className="form" onSubmit={handleSubmit} >
                     <div className="form-div" >
                         <label
-                            htmlFor="Name"
+                            htmlFor="ListName"
                             className="form-label"
                         >
                             List Name
@@ -44,7 +70,7 @@ const CreateListForm = () => {
                         <input
                             type="text"
                             name="Name"
-                            id="Name"
+                            id="ListName"
                             className="input-text"
                             placeholder="Give your list a name"
                             value={formData.Name}
@@ -54,7 +80,7 @@ const CreateListForm = () => {
 
                     <div className="form-div" >
                         <label
-                            htmlFor="Desc"
+                            htmlFor="ListDesc"
                             className="form-label"
                         >
                             Description
@@ -62,7 +88,7 @@ const CreateListForm = () => {
                         <textarea
                             type="text"
                             name="Desc"
-                            id="Desc"
+                            id="ListDesc"
                             className="input-text resize-none h-20"
                             placeholder="Describe your list"
                             value={formData.Desc}
@@ -88,7 +114,7 @@ const CreateListForm = () => {
 
                 </form>
             </ExpandingWindow>
-        </>
+        </section>
     )
 }
 

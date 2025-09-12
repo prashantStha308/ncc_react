@@ -3,24 +3,28 @@ import { useUserStore } from "../../store/user.store.js";
 import { createTask } from "../../services/task.services.js";
 import { useWindowStore } from "../../store/window.store.js";
 import ExpandingWindow from "../ExpandingWindow.jsx";
+import { useListStore } from "../../store/list.store.js";
 
 const AddTaskForm = () => {
 
-    const { addTaskWindowStatus: isOpen, setAddTaskWindowStatus, addTaskSpawnPoint } = useWindowStore();
-    const { lists } = useUserStore();
-
+    const { addTaskWindowStatus: isOpen, setAddTaskWindowStatus, spawnPoint } = useWindowStore();
+    const { lists = [], fetchAllLists } = useListStore()
+    const { isLoggedIn, user } = useUserStore();
+    
+    const [ loading, setLoading ] = useState(false);
     const [formData, setFormData] = useState({
         Name: "",
-        Desc: ""
+        Desc: "",
+        listId: ""
     })
-
-    const [selectedList, setSelectedList] = useState("");
 
     const setClose = () => setAddTaskWindowStatus(false);
 
     useEffect(() => {
-        if (lists.length > 0) setSelectedList(lists[0].listId);
-    }, [lists]);
+        if (isLoggedIn) {
+            fetchAllLists(user.userId)
+        }
+    },[isLoggedIn, fetchAllLists, user])
 
     const handleChange = (e) => {
         const {name, value} = e.target;
@@ -29,26 +33,44 @@ const AddTaskForm = () => {
             [name]: value
         }))
     }
+    
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!formData.Name || !selectedList) return;
+        try {
+            console.log(formData);
 
-        const res = await createTask(selectedList, formData);
-        console.log("Task Created:", res);
-        setFormData({
-            Name: "",
-            Desc: ""
-        });
-        setClose();
+            if (!formData.listId) {
+                alert("Please select a list"); // Or use a proper toast/notification
+                return;
+            }
+            
+            setLoading(true);
+            const res = await createTask(formData.listId, { Name: formData.Name, Desc: formData.Desc });
+            if (!res.success) {
+                throw new Error(res.message);
+            }
+            console.log("Task Created:", res);
+            setFormData({
+                Name: "",
+                Desc: "",
+                listId: 0
+            });
+            setClose();
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
-        <>
+        <section className="z-40" >
             <ExpandingWindow
                 setClose={setClose}
                 isOpen={isOpen}
-                spawnPoint={addTaskSpawnPoint}
+                spawnPoint={spawnPoint}
+                loading={loading}
                 heading="Add New Task"
             >
 
@@ -83,22 +105,31 @@ const AddTaskForm = () => {
                         />
                     </div>
 
-                    <div className="form-div">
-                        <label htmlFor="TaskList" className="form-label">
+                   <div className="form-div">
+                        <label htmlFor="listId" className="form-label">
                             Select List
                         </label>
+
                         <select
-                            id="TaskList"
-                            value={selectedList}
-                            onChange={(e) => setSelectedList(e.target.value)}
-                            className="border-2 border-accentLight rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accentDark transition"
+                            name="listId"
+                            id="listId"
+                            className="input-text"
+                            value={formData.listId}
+                            onChange={handleChange}
                             required
                         >
-                            {lists.map((list) => (
-                                <option key={list.listId} value={list.listId}>
-                                    {list.name}
-                                </option>
-                            ))}
+                            {
+                                lists?.map((item) => (
+                                    item && (
+                                        <option
+                                            value={item.listId}
+                                            key={item.listId}
+                                        >
+                                            {item.name || ""}
+                                        </option>
+                                    )
+                                ))
+                            }
                         </select>
                     </div>
 
@@ -119,7 +150,7 @@ const AddTaskForm = () => {
                     </div>
                 </form>
             </ExpandingWindow>
-        </>
+        </section>
     );
 };
 

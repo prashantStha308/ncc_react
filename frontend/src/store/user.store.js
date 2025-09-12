@@ -5,7 +5,6 @@ import { RegisterUser, Login } from "../services/user.services";
 export const useUserStore = create(persist((set) => ({
     user: null,
     isLoggedIn: false,
-    lists: [],
 
 
     setUser: (user) => set({ user }),
@@ -13,6 +12,7 @@ export const useUserStore = create(persist((set) => ({
     register: async (userData) => {
         try {
             const res = await RegisterUser(userData);
+            console.log(res);
             if (res?.success) {
                 const { username, user_Id } = res.data;
                 set({ user: { username, userId: user_Id } });
@@ -49,12 +49,10 @@ export const useUserStore = create(persist((set) => ({
 
     // Logout user
     logout: () => {
-        set({ user: null, lists: [] });
+        set({ user: null });
         set({ isLoggedIn: false });
     },
 
-    // Set user lists
-    setLists: (lists) => set({ lists }),
 }),
     {
         name: 'logged-user',

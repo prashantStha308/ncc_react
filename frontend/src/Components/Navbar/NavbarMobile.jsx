@@ -9,7 +9,7 @@ import useWindowHelper from '../../Helpers/window.helper.js';
 
 const NavbarMobile = () => {
     const { currentPage, setCurrentPage } = useNavbarStore();
-    const { handleExpand } = useWindowHelper();
+    const { handleExpandAddTask } = useWindowHelper();
     const location = useLocation();
 
     useEffect(() => {
@@ -27,14 +27,14 @@ const NavbarMobile = () => {
             </Link>
             <Link className="px-3 py-1 rounded-md active:bg-accentLight transition-all duration-75 ease-in-out"  to={'/todo'} >
                 <div>
-                    <ListTodo size={25} strokeWidth={1} fill={currentPage === 'todo' ? '#F7A5A5' : "none"} strokeColor={currentPage === 'todo' ? '#5D688A' : "currentColor"}/>
+                    <ListTodo size={25} strokeWidth={1} fill={currentPage === 'todo' ? '#F7A5A5' : "none"} stroke={currentPage === 'todo' ? '#5D688A' : "currentColor"}/>
 
                 </div>
             </Link>
 
             {/* Create Task */}
             <div className="px-3 py-1 rounded-md active:bg-accentLight transition-all duration-75 ease-in-out"  >
-                <button onClick={(e) => handleExpand(e)} >
+                <button onClick={(e) => handleExpandAddTask(e)} >
                     <BadgePlus className={`${currentPage === 'upload' && "fill-red-500 text-white " }`} size={35} strokeWidth={1} />
                 </button>
             </div>

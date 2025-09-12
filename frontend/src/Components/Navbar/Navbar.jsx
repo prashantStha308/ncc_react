@@ -8,8 +8,8 @@ import useWindowHelper from "../../Helpers/window.helper";
 
 const Navbar = () => {
 
-    const { currentPage, setCurrentPage } = useNavbarStore();
-    const { handleExpand } = useWindowHelper();
+    const { currentPage, setCurrentPage, navbarRef, setNavbarRef } = useNavbarStore();
+    const { handleExpandAddTask } = useWindowHelper();
     const { isLoggedIn } = useUserStore();
     const location = useLocation();
 
@@ -18,11 +18,17 @@ const Navbar = () => {
     useEffect(() => {
         const path = location.pathname.substring(1).split('/')[0] || "home";
         setCurrentPage(path);
-    },[location, currentPage])
+    }, [location])
+    
+    useEffect(() => {
+        if (navbarRef?.current !== null) {
+            setNavbarRef(navbarRef);
+        }
+    },[navbarRef, setNavbarRef])
 
 
     return (
-        <section className="fixed left-0 top-0 bg-bgLight py-4 px-8 w-[15rem] min-h-screen box-border hidden md:flex flex-col gap-8 text-textDark">
+        <section ref={navbarRef} className="fixed left-0 top-0 bg-white py-4 px-8 md:w-[12rem] lg:w-[15rem] min-h-screen box-border hidden md:flex flex-col gap-8 text-textDark">
             <header>
                 <Link to={'/'} >
                     <h1 className="text-3xl text-center text-accentDark font-black underline" > Aligner </h1>
@@ -34,7 +40,7 @@ const Navbar = () => {
                     isLoggedIn ?
                         <button
                             className={buttonClass}
-                            onClick={(e) => handleExpand(e)}
+                            onClick={handleExpandAddTask}
                         > Add Task </button>
                         :
                         <Link

@@ -2,9 +2,12 @@ import { create } from "zustand";
 
 export const useWindowStore = create((set) => ({
     addTaskWindowStatus: false,
-    addTaskSpawnPoint: { x: 0, y: 0 },
+    createListStatus: false,
+
+    spawnPoint: { x: 0, y: 0 },
 
     setAddTaskWindowStatus: (status) => set({ addTaskWindowStatus: status }),
-    setAddTaskSpawnPoint: (obj) => set({ spawnPoint: { ...obj } }),
+    setCreateListStatus: (status) => set({ createListStatus: status }),
+    setSpawnPoint: (obj) => set({ spawnPoint: { ...obj } }),
 
 }))

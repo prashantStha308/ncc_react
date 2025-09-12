@@ -12,8 +12,8 @@ using backend.Data;
 namespace backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250831082624_updated")]
-    partial class updated
+    [Migration("20250912074631_fresh-start")]
+    partial class freshstart
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -44,6 +44,9 @@ namespace backend.Migrations
                         .HasColumnType("datetime(6)");
 
                     b.Property<Guid>("ListId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("OwnerId")
                         .HasColumnType("char(36)");
 
                     b.Property<string>("ParentList")

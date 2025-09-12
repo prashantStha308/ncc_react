@@ -2,8 +2,10 @@ import axios from "axios";
 import { BASEAPI } from "../Constants";
 
 export const createTask = async (listId, objectData) => {
+    console.log("LIst ID", listId);
+    console.log("Task Data", objectData);
     try {
-        const res = await axios.post(`${BASEAPI}/api/task/${listId}/add`, objectData);
+        const res = await axios.post(`${BASEAPI}/api/task/add/${listId}`, objectData);
         if (!res.data.success) {
             throw new Error(res.data.message);
         }

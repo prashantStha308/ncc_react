@@ -16,11 +16,11 @@ const Hero = () => {
                         <p className="text-textDark opacity-80 text-base lg:text-lg mt-6 max-w-lg leading-relaxed">
                             Stay organized, productive, and on top of your daily goals with our intuitive tracking system.
                         </p>
-                        <div className="mt-8 flex justify-between md:justify-start md:flex-wrap gap-4">
-                            <Link to={'/login'} className="bg-accentDark text-white px-6 py-2 rounded-lg font-semibold hover:bg-opacity-90 transition-all text-sm lg:text-base cursor-pointer items-center flex">
+                        <div className="mt-8 flex justify-start md:flex-wrap gap-4">
+                            <Link to={'/login'} className="bg-accentDark text-white px-6 py-2 rounded-lg font-semibold hover:bg-opacity-90 transition-all text-base lg:text-base cursor-pointer items-center flex">
                                 Get Started
                             </Link>
-                            <Link to={'/about'} className="border-2 border-accentDark text-accentDark px-6 py-2 rounded-lg font-semibold hover:bg-accentDark hover:text-white transition-all text-sm lg:text-base cursor-pointer items-center flex">
+                            <Link to={'/about'} className="border-2 border-accentDark text-accentDark px-6 py-2 rounded-lg font-semibold hover:bg-accentDark hover:text-white transition-all text-base lg:text-base cursor-pointer items-center flex">
                                 Learn More
                             </Link>
                         </div>
