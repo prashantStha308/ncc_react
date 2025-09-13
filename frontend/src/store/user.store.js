@@ -12,7 +12,6 @@ export const useUserStore = create(persist((set) => ({
     register: async (userData) => {
         try {
             const res = await RegisterUser(userData);
-            console.log(res);
             if (res?.success) {
                 const { username, user_Id } = res.data;
                 set({ user: { username, userId: user_Id } });
@@ -30,9 +29,7 @@ export const useUserStore = create(persist((set) => ({
     // Login existing user
     login: async (userData) => {
         try {
-            console.log(userData);
             const res = await Login(userData);
-            console.log(res);
             if (res?.success) {
                 const { username, userId } = res.data;
                 set({ user: { username, userId } });

@@ -4,23 +4,32 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "watch": "cross-env ASPNETCORE_ENVIRONMENT=Development dotnet watch run --project ./backend/backend.csproj",
-    "dev": "cross-env ASPNETCORE_ENVIRONMENT=Development dotnet run --project ./backend/backend.csproj",
-    "prod": "cross-env ASPNETCORE_ENVIRONMENT=Production dotnet run --project ./backend/backend.csproj",
+    "watch": "dotnet watch run --project ./backend/backend.csproj",
 
-    "build": "dotnet build ./backend/backend.csproj",
-    "clean": "dotnet clean --project ./backend/backend.csproj",
-    
+    "dev:b": "dotnet run --project ./backend/backend.csproj",
+    "dev:f": "cd frontend && npm run dev",
+
+    "install:backend": "cd backend && dotnet restore && cd ..",
+    "install:frontend": "cd frontend && npm install && cd ..",
+    "install": "npm run install:backend && npm run install:frontend",
+
+    "build:backend": "dotnet build ./backend/backend.csproj",
+    "build:frontend": "cd frontend && npm run build && cd ..",
+    "build":" npm run build:backend && npm run build:frontend ",
+
+    "start:backend": "dotnet run --project ./backend/backend.csproj",
+    "start:frontend": "cd frontend && npm run build && npm run preview",
+    "start": "concurrently \"npm run start:frontend\" \"npm run start:backend\" ",
+
     "migrate-add": "dotnet ef migrations add --project ./backend",
-    "migrate-update": "dotnet ef database update --project ./backend",
-    "migrate-remove": "dotnet ef migrations remove --project ./backend",
-    "test": "echo 'configure react ko lagi paxi'"
+    "migrate-update": "dotnet ef database update --project ./backend"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
+    "concurrently": "^9.2.1",
     "cross-env": "^10.0.0"
   }
 }

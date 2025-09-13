@@ -38,8 +38,6 @@ const AddTaskForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            console.log(formData);
-
             if (!formData.listId) {
                 alert("Please select a list"); // Or use a proper toast/notification
                 return;
@@ -50,7 +48,6 @@ const AddTaskForm = () => {
             if (!res.success) {
                 throw new Error(res.message);
             }
-            console.log("Task Created:", res);
             setFormData({
                 Name: "",
                 Desc: "",
@@ -58,7 +55,7 @@ const AddTaskForm = () => {
             });
             setClose();
         } catch (error) {
-            console.log(error);
+            console.error(error);
         } finally {
             setLoading(false);
         }

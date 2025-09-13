@@ -39,7 +39,6 @@ const RegisterLayout = () => {
             if (!res?.success) {
                 throw new Error (res?.message);
             }
-            console.log("Registered:", res.data);
             naviage('/login');
         } catch (error) {
             console.error(error);

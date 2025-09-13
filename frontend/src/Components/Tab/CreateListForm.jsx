@@ -32,8 +32,6 @@ const CreateListForm = () => {
             if (!isLoggedIn) {
                 throw new Error("NOt logged in");
             }
-            console.log(formData);
-
             await createList(user.userId, formData);
 
             if (error) {
@@ -46,7 +44,7 @@ const CreateListForm = () => {
             setClose();
 
         } catch (e) {
-            console.log(e);
+            console.error(e);
         }
     }
 

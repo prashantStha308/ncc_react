@@ -37,7 +37,6 @@ const LoginLayout = () => {
             if (!res?.success) {
                 throw new Error (res?.message);
             }
-            console.log("Logged in:", res.data);
             naviage('/todo');
         } catch (error) {
             setError(error);

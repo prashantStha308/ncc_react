@@ -15,7 +15,6 @@ export const useListStore = create((set) => ({
         set({ loading: true, error: null });
         try {
             const res = await getAllTaskList(userId);
-            console.log(res.data);
             set({ lists: res.data, loading: false });
         } catch (err) {
             set({ error: err.message || "Failed to fetch lists", loading: false });

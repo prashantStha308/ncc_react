@@ -14,8 +14,6 @@ const AppRoutes = () => {
       {/* Auth */}
       <Route path="/login" element={<LoginLayout />} />
       <Route path="/register" element={<RegisterLayout />} />
-
-      <Route path="/test" element={<Sandbox />} />
     </Routes>
   )
 }
