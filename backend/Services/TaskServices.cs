@@ -26,7 +26,7 @@ public class TaskServices : ITaskService
         {
             TaskList target = _repo.GetDataById<TaskList>(listId);
 
-            TaskItem newTask = new(listId,target.ListId, target.Name, requestDto.Name, requestDto.Desc);
+            TaskItem newTask = new(listId,target.OwnerId, target.Name, requestDto.Name!, requestDto.Desc);
             target.List.Add(newTask);
             target.TaskCount++;
 
