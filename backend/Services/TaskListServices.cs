@@ -3,6 +3,7 @@ using backend.DTO;
 using backend.Helpers;
 using backend.Models;
 using backend.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace backend.Services;
@@ -31,7 +32,9 @@ public class TaskListServices : ITaskListServices
             {
                 newList = new TaskList(request.Name, request.Desc ?? "");
             }
-            _repo.AddDataToContextAndSave<TaskList>(newList);
+
+            _context.ListSet.Add(newList);
+            _context.SaveChanges();
 
             return ListResult.Ok(newList, "List Created successfully", 201);
         }
@@ -45,7 +48,11 @@ public class TaskListServices : ITaskListServices
     {
         try
         {
-            _repo.DeleteDataByIdAndSave<TaskList>(listId);
+            _repo.DeleteDataById<TaskList>(listId);
+
+            _context.TaskSet.Where(task => task.ListId == listId).ExecuteDelete();
+            _context.SaveChanges();
+
             return ListResult.Ok("Deleted Task List successfully", 200);
         }
         catch (ApiError e)
@@ -61,10 +68,11 @@ public class TaskListServices : ITaskListServices
             TaskList? target = _repo.GetDataById<TaskList>(listId);
 
             if (request.Name != null) target.Name = request.Name;
-            if (request.Name != null) target.Desc = request.Desc;
+            if (request.Desc != null) target.Desc = request.Desc;
+            if (request.Name != null || request.Desc != null) target.LastUpdated = DateTime.UtcNow;
 
             _context.SaveChanges();
-            return ListResult.Ok("List Updated Successfully", 200);
+            return ListResult.Ok(target, "List Updated Successfully", 200);
         }
         catch (ApiError e)
         {
@@ -89,7 +97,7 @@ public class TaskListServices : ITaskListServices
     {
         try
         {
-            TaskList? target = _repo.GetDataById<TaskList>(listId, includeTasks: true);
+            TaskList target = _repo.GetDataById<TaskList>(listId, includeTasks: true);
 
             return ListResult.Ok(target, "Successfully Fetched List", 200);
         }
@@ -103,9 +111,19 @@ public class TaskListServices : ITaskListServices
     {
         try
         {
-            TaskList? target = _repo.GetDataById<TaskList>(listId);
+            // Throws error if not found, dw about target being null
+            TaskList target = _repo.GetDataById<TaskList>(listId);
 
             target.IsCompleted = !target.IsCompleted;
+            if (target.IsCompleted)
+            {
+                target.CompletedTaskCount = target.List.Count;
+            }
+            else
+            {
+                target.CompletedTaskCount = _context.TaskSet.Count(task => task.ListId == listId && task.IsCompleted);
+            }
+
             _context.SaveChanges();
 
             return ListResult.Ok(target, "Updated list status successfully", 200);

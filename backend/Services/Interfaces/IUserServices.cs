@@ -8,7 +8,7 @@ using UserRes = Result<UserResponse>;
 
 public interface IUserServices
 {
-    public UserResult Register(UserRequests_Register registerDto);
+    public UserRes Register(UserRequests_Register registerDto);
 
     public UserRes LogIn(UserRequests_Login loginDto);
     public Result<List<TaskList>> GetAllUserLists(Guid userId);

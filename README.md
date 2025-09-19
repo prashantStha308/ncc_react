@@ -39,17 +39,15 @@ A comprehensive task management and organization system designed to help users a
     #Install Entity Framework globally
     dotnet tool install --global dotnet-ef
 
-    # Generate database
+    # Migrate database
     npm run migrate-add -- init
-
-    # Update databases using ef
     npm run migrate-update
 ```
 
 ### Build and Start the Project
 
 ```bash
-    # build both backend and frontend
+    # start build
     npm run build
 
     # Start the project

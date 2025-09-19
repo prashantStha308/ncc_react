@@ -22,9 +22,9 @@ export const createTask = async (listId, objectData) => {
     }
 }
 
-export const getAllTasks = async () => {
+export const getAllTasks = async (userId) => {
     try {
-        const res = await axios.get(`${BASEAPI}/api/task/`);
+        const res = await axios.get(`${BASEAPI}/api/task/all/${userId ? userId : ""}`);
         if (!res.data.success) {
             throw new Error(res.data.message);
         }

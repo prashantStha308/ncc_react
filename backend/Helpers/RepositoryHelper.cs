@@ -1,4 +1,3 @@
-using System;
 using backend.Data;
 using backend.Models;
 using Microsoft.EntityFrameworkCore;
@@ -29,6 +28,19 @@ public class RepositoryHelper
         return query.ToList();
     }
 
+    public List<T> GetAllData<T>(bool includeTasks = false) where T : class
+    {
+        if (includeTasks && typeof(T) == typeof(TaskList))
+        {
+            return _context.Set<TaskList>()
+                        .Include(t => t.List)
+                        .Cast<T>()
+                        .ToList();
+        }
+
+        return _context.Set<T>().ToList();
+    }
+
     public T GetDataById<T>(Guid id, bool includeTasks = false) where T : class
     {
         if (includeTasks && typeof(T) == typeof(TaskList))
@@ -46,19 +58,13 @@ public class RepositoryHelper
         return target;
     }
 
-    public void DeleteDataByIdAndSave<T>(Guid id) where T : class
+    public void DeleteDataById<T>(Guid id) where T : class
     {
         T? target = _context.Set<T>().Find(id);
 
         if (target == null) throw new ApiError($"{typeof(T).Name} not found", 404);
 
         _context.Set<T>().Remove(target);
-        _context.SaveChanges();
-    }
-
-    public void AddDataToContextAndSave<T>(T data) where T : class
-    {
-        _context.Set<T>().Add(data);
         _context.SaveChanges();
     }
 }

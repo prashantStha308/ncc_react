@@ -1,11 +1,11 @@
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using backend.Constants;
 using backend.Data;
 using backend.DTO;
 using backend.Helpers;
 using backend.Models;
 using backend.Services.Interfaces;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace backend.Services;
 
@@ -39,12 +39,11 @@ public class UserServices : IUserServices
         if (!new EmailAddressAttribute().IsValid(email))
             throw new ApiError("Invalid Email.", 400);
 
-        bool exists = _context.UserSet.Any(u => u.Email == email);
-        if (exists)
+        if (_context.UserSet.Any(u => u.Email == email))
             throw new ApiError("User with this email already exists.", 400);
     }
 
-    public UserResult Register(UserRequests_Register registerDto)
+    public UserRes Register(UserRequests_Register registerDto)
     {
         try
         {
@@ -55,13 +54,15 @@ public class UserServices : IUserServices
 
             UserModel newUser = new(registerDto.Username, registerDto.Email, hashedPassword);
 
-            _repo.AddDataToContextAndSave<UserModel>(newUser);
-
-            return UserResult.Ok(newUser,"Registered User Successfully");
+            _context.UserSet.Add(newUser);
+            _context.SaveChanges();
+            
+            UserResponse SafeRes = new(newUser.Username, newUser.User_Id);
+            return UserRes.Ok(SafeRes, "Registered User Successfully");
         }
         catch (ApiError e)
         {
-            return UserResult.Fail(e);
+            return UserRes.Fail(e);
         }
     }
 
@@ -74,9 +75,8 @@ public class UserServices : IUserServices
             if (!_auth.VerifyPassword(target, target.Password, loginDto.Password))
                 return UserRes.Fail("Invalid Credentials", 401);
 
-            UserResponse SafeResponse = new(target.Username, target.User_Id);
-
-            return UserRes.Ok(SafeResponse, "User logged In.");
+            UserResponse SafeRes = new(target.Username, target.User_Id);
+            return UserRes.Ok(SafeRes, "User logged In.");
         }
         catch (ApiError e)
         {
@@ -107,14 +107,14 @@ public class UserServices : IUserServices
             {
                 if (!new EmailAddressAttribute().IsValid(updateDto.Email))
                 {
-                    return UserRes.Fail("Invalid Email", 400);
+                    throw new ApiError("Invalid Email", 400);
                 }
-                target.Email = updateDto.Email;
+                target.Email = updateDto.Email!;
             }
+
             if (!string.IsNullOrEmpty(updateDto.Username)) target.Username = updateDto.Username;
 
             _context.SaveChanges();
-
             UserResponse SafeRes = new(target.Username, target.User_Id);
 
             return UserRes.Ok(SafeRes, "Updated User Successfully");
@@ -126,15 +126,32 @@ public class UserServices : IUserServices
     }
     public UserResult DeleteUserById(Guid UserId)
     {
+        using var transaction = _context.Database.BeginTransaction();
         try
         {
-            _repo.DeleteDataByIdAndSave<UserModel>(UserId);
-            return UserResult.Ok("Successfully Deleted the User");
+            _context.TaskSet
+                .Where(task => _context.ListSet
+                    .Where(list => list.OwnerId == UserId)
+                    .Select(list => list.ListId)
+                    .Contains(task.ListId))
+                .ExecuteDelete();
 
+            _context.ListSet
+                .Where(list => list.OwnerId == UserId)
+                .ExecuteDelete();
+
+            _context.UserSet
+                .Where(user => user.User_Id == UserId)
+                .ExecuteDelete();
+
+            transaction.Commit();
+
+            return UserResult.Ok("Successfully Deleted the User");
         }
-        catch (ApiError e)
+        catch (Exception e)
         {
-            return UserResult.Fail(e);
+            transaction.Rollback();
+            return UserResult.Fail(new ApiError(e.Message));
         }
     }
 

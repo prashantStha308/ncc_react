@@ -6,13 +6,24 @@ import { useUserStore } from "../../store/user.store";
 import useWindowHelper from "../../Helpers/window.helper";
 import { useWindowStore } from "../../store/window.store";
 import InitialTab from "./InitialTab";
+import { useListStore } from "../../store/list.store";
+import { useEffect } from "react";
 
 
 const TabContainer = () => {
     const { handleExpandAddTask, handleExpandCreateList } = useWindowHelper();
     const { spawnPoint } = useWindowStore();
-    const { tasks = [] } = useTaskStore();
-    const { isLoggedIn } = useUserStore();
+    const { tasks = [], fetchAllTasks } = useTaskStore();
+    const { lists = [], fetchAllLists } = useListStore();
+    const { isLoggedIn, user } = useUserStore();
+
+    useEffect(() => {
+        console.log(user);
+        if (isLoggedIn && user) {
+            fetchAllLists(user.userId);
+            fetchAllTasks(user.userId);
+        }
+    },[isLoggedIn, user])
 
 
     const tabs = [
@@ -28,7 +39,7 @@ const TabContainer = () => {
             <AddTaskForm spawnPoint={spawnPoint} />
             
             {
-                isLoggedIn && tasks.length !== 0 ?
+                isLoggedIn && tasks.length !== 0 && lists.length !== 0 ?
                     <ResponsiveMasonry columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 3 }}>
                         <Masonry gutter="20px">
                             {tabs.map((tab, index) => (

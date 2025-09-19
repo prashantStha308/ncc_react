@@ -1,4 +1,3 @@
-using backend.Constants;
 using backend.Data;
 using backend.DTO;
 using backend.Helpers;
@@ -25,12 +24,13 @@ public class TaskServices : ITaskService
     {
         try
         {
-            // This also validates the existance of the list
             TaskList target = _repo.GetDataById<TaskList>(listId);
 
             TaskItem newTask = new(listId,target.ListId, target.Name, requestDto.Name, requestDto.Desc);
             target.List.Add(newTask);
-            _repo.AddDataToContextAndSave<TaskItem>(newTask);
+            target.TaskCount++;
+
+            _context.TaskSet.Add(newTask);
             _context.SaveChanges();
 
             return TaskResult.Ok(newTask, "Task added successfully", 201);
@@ -45,7 +45,20 @@ public class TaskServices : ITaskService
     {
         try
         {
-            List<TaskItem> tasks = _repo.GetAllData<TaskItem>(userId, includeTasks: false);
+            List<TaskItem> tasks = _repo.GetAllData<TaskItem>(userId, includeTasks: true);
+            return Result<List<TaskItem>>.Ok(tasks, "Fetched All Tasks", 200);
+        }
+        catch (ApiError e)
+        {
+            return Result<List<TaskItem>>.Fail(e);
+        }
+    }
+
+    public Result<List<TaskItem>> GetAllTasks()
+    {
+        try
+        {
+            List<TaskItem> tasks = _repo.GetAllData<TaskItem>(includeTasks: true);
             return Result<List<TaskItem>>.Ok(tasks, "Fetched All Tasks", 200);
         }
         catch (ApiError e)
@@ -73,7 +86,13 @@ public class TaskServices : ITaskService
     {
         try
         {
-            _repo.DeleteDataByIdAndSave<TaskItem>(taskId);
+            TaskItem target = _repo.GetDataById<TaskItem>(taskId);
+            _context.TaskSet.Remove(target);
+
+            TaskList targetList = _repo.GetDataById<TaskList>(target.ListId);
+            if (targetList != null && targetList.TaskCount > 0) targetList.TaskCount--;
+
+            _context.SaveChanges();
 
             return TaskResult.Ok("Deleted Task successfully", 200);
         }
@@ -107,7 +126,7 @@ public class TaskServices : ITaskService
     {
         try
         {
-            TaskItem? target = _repo.GetDataById<TaskItem>(taskId);
+            TaskItem target = _repo.GetDataById<TaskItem>(taskId);
 
             return TaskResult.Ok(target, "Successfully Fetched Task", 200);
         }
@@ -121,23 +140,25 @@ public class TaskServices : ITaskService
     {
         try
         {
-            TaskItem? target = _repo.GetDataById<TaskItem>(taskId);
-            TaskList? taskList = _repo.GetDataById<TaskList>(target.ListId);
+            TaskItem target = _repo.GetDataById<TaskItem>(taskId);
+            TaskList taskList = _repo.GetDataById<TaskList>(target.ListId);
 
             int prevStatus = target.Status;
 
+            // Deafult to prevStatus if status.Status is not in range of [0,2]
             int _status = (status.Status >= 0 && status.Status <= 2) ? status.Status : prevStatus;
             target.Status = _status;
 
             if (_status == 2)
             {
                 target.IsCompleted = true;
-                taskList.CompletedTaskCount++;
+                taskList.CompletedTaskCount = taskList.CompletedTaskCount >= taskList.List.Count ? taskList.List.Count : taskList.List.Count + 1;
 
             }
             if ((_status == 0 || _status == 1) && prevStatus == 2 )
             {
                 taskList.CompletedTaskCount--;
+                taskList.IsCompleted = false;
             }
 
             _context.SaveChanges();

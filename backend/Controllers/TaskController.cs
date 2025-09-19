@@ -14,7 +14,17 @@ namespace backend.Controllers
             _services = services;
         }
 
-        [HttpGet("{userId}/all")]
+        [HttpGet("all")]
+        public IActionResult GetAllUserTasks()
+        {
+            var res = _services.GetAllTasks();
+            if (!res.Success) return BadRequest(res);
+
+            return Ok(res);
+        }
+
+
+        [HttpGet("all/{userId}")]
         public IActionResult GetAllUserTasks(Guid userId)
         {
             var res = _services.GetAllTasks(userId);
@@ -61,6 +71,7 @@ namespace backend.Controllers
         [HttpPatch("toggle/{taskId}")]
         public IActionResult ToggleTaskCompletion(Guid taskId, [FromBody] TaskRequest_status status)
         {
+            Console.WriteLine(status);
             var res = _services.ToggleTaskStatusById(taskId, status);
             if (!res.Success) return BadRequest(res);
 
